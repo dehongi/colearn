@@ -1,0 +1,23 @@
+{% extends "courses/form_base.html" %}
+
+{% block courses_title %}{% if form.instance.pk %}Edit Course{% else %}Create Course{% endif %}{% endblock %}
+
+{% block form_title %}
+{% if form.instance.pk %}
+Edit Course: {{ form.instance.title }}
+{% else %}
+Create New Course
+{% endif %}
+{% endblock %}
+
+{% block form_submit_text %}
+{% if form.instance.pk %}Update Course{% else %}Create Course{% endif %}
+{% endblock %}
+
+{% block form_cancel_url %}
+{% if form.instance.pk %}
+{% url 'courses:course_detail' form.instance.slug %}
+{% else %}
+{% url 'courses:instructor_dashboard' %}
+{% endif %}
+{% endblock %} 

@@ -1,0 +1,191 @@
+{% extends "social/base.html" %}
+{% load i18n %}
+
+{% block social_content %}
+<div class="mb-4">
+    <nav aria-label="breadcrumb">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href="{% url 'social:discussion_list' %}">{% trans "Discussions" %}</a></li>
+            <li class="breadcrumb-item active">{{ discussion.title }}</li>
+        </ol>
+    </nav>
+</div>
+
+<div class="card mb-4">
+    <div class="card-body">
+        <div class="d-flex justify-content-between align-items-start mb-3">
+            <h1 class="h2 mb-0">
+                {% if discussion.is_pinned %}
+                <i class="bi bi-pin-angle-fill text-primary"></i>
+                {% endif %}
+                {% if discussion.is_announcement %}
+                <i class="bi bi-megaphone-fill text-warning"></i>
+                {% endif %}
+                {{ discussion.title }}
+            </h1>
+            {% if user == discussion.author %}
+            <a href="{% url 'social:edit_discussion' discussion.slug %}" class="btn btn-outline-primary btn-sm">
+                <i class="bi bi-pencil"></i> {% trans "Edit" %}
+            </a>
+            {% endif %}
+        </div>
+
+        <div class="d-flex justify-content-between align-items-center mb-3">
+            <div class="text-muted">
+                {% trans "By" %} {{ discussion.author.get_full_name|default:discussion.author.username }}
+                {% if discussion.course %}
+                {% trans "in" %} {{ discussion.course.title }}
+                {% endif %}
+            </div>
+            <span class="badge bg-{{ discussion.status|lower }}">
+                {{ discussion.get_status_display }}
+            </span>
+        </div>
+
+        <div class="discussion-content mb-4">
+            {{ discussion.content|linebreaks }}
+        </div>
+
+        <div class="text-muted">
+            <small>
+                {% trans "Created" %} {{ discussion.created_at|timesince }} {% trans "ago" %}
+                {% if discussion.updated_at != discussion.created_at %}
+                ({% trans "Updated" %} {{ discussion.updated_at|timesince }} {% trans "ago" %})
+                {% endif %}
+            </small>
+        </div>
+    </div>
+</div>
+
+<div class="comments-section">
+    <h3 class="h4 mb-4">{% trans "Comments" %}</h3>
+
+    {% if user.is_authenticated %}
+    <div class="card mb-4">
+        <div class="card-body">
+            <form method="post" action="{% url 'social:add_comment' discussion.slug %}">
+                {% csrf_token %}
+                {{ comment_form.as_p }}
+                <button type="submit" class="btn btn-primary">
+                    {% trans "Add Comment" %}
+                </button>
+            </form>
+        </div>
+    </div>
+    {% endif %}
+
+    {% if comments %}
+    <div class="comments-list">
+        {% for comment in comments %}
+        <div class="card mb-3 {% if comment.is_solution %}border-success{% endif %}">
+            <div class="card-body">
+                <div class="d-flex justify-content-between align-items-start mb-2">
+                    <div>
+                        <strong>{{ comment.author.get_full_name|default:comment.author.username }}</strong>
+                        <small class="text-muted ms-2">
+                            {{ comment.created_at|timesince }} {% trans "ago" %}
+                        </small>
+                    </div>
+                    {% if comment.is_solution %}
+                    <span class="badge bg-success">
+                        <i class="bi bi-check-circle-fill"></i> {% trans "Solution" %}
+                    </span>
+                    {% endif %}
+                </div>
+
+                <div class="comment-content mb-3">
+                    {{ comment.content|linebreaks }}
+                </div>
+
+                <div class="d-flex justify-content-between align-items-center">
+                    <div class="reactions">
+                        {% for reaction in comment.reactions.all %}
+                        <span class="badge bg-light text-dark me-1">
+                            {{ reaction.get_type_display }}
+                        </span>
+                        {% endfor %}
+                    </div>
+
+                    <div class="actions">
+                        {% if user.is_authenticated %}
+                        <button class="btn btn-sm btn-outline-primary me-2" data-bs-toggle="collapse" 
+                                data-bs-target="#replyForm{{ comment.id }}">
+                            <i class="bi bi-reply"></i> {% trans "Reply" %}
+                        </button>
+                        <form method="post" action="{% url 'social:add_reaction' comment.id %}" class="d-inline">
+                            {% csrf_token %}
+                            <div class="btn-group">
+                                <button type="button" class="btn btn-sm btn-outline-secondary dropdown-toggle" 
+                                        data-bs-toggle="dropdown">
+                                    <i class="bi bi-emoji-smile"></i> {% trans "React" %}
+                                </button>
+                                <ul class="dropdown-menu">
+                                    {% for value, label in reaction_form.fields.type.choices %}
+                                    <li>
+                                        <button type="submit" name="type" value="{{ value }}" 
+                                                class="dropdown-item">
+                                            {{ label }}
+                                        </button>
+                                    </li>
+                                    {% endfor %}
+                                </ul>
+                            </div>
+                        </form>
+                        {% endif %}
+                        {% if user == discussion.author and not comment.is_solution %}
+                        <form method="post" action="{% url 'social:mark_solution' comment.id %}" class="d-inline">
+                            {% csrf_token %}
+                            <button type="submit" class="btn btn-sm btn-outline-success ms-2">
+                                <i class="bi bi-check-circle"></i> {% trans "Mark as Solution" %}
+                            </button>
+                        </form>
+                        {% endif %}
+                    </div>
+                </div>
+
+                {% if user.is_authenticated %}
+                <div class="collapse mt-3" id="replyForm{{ comment.id }}">
+                    <div class="card card-body">
+                        <form method="post" action="{% url 'social:add_reply' comment.id %}">
+                            {% csrf_token %}
+                            {{ reply_form.as_p }}
+                            <button type="submit" class="btn btn-primary">
+                                {% trans "Add Reply" %}
+                            </button>
+                        </form>
+                    </div>
+                </div>
+                {% endif %}
+
+                {% if comment.replies.exists %}
+                <div class="replies mt-3">
+                    {% for reply in comment.replies.all %}
+                    <div class="card mb-2">
+                        <div class="card-body">
+                            <div class="d-flex justify-content-between align-items-start mb-2">
+                                <div>
+                                    <strong>{{ reply.author.get_full_name|default:reply.author.username }}</strong>
+                                    <small class="text-muted ms-2">
+                                        {{ reply.created_at|timesince }} {% trans "ago" %}
+                                    </small>
+                                </div>
+                            </div>
+                            <div class="reply-content">
+                                {{ reply.content|linebreaks }}
+                            </div>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+                {% endif %}
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+    {% else %}
+    <div class="alert alert-info">
+        {% trans "No comments yet. Be the first to comment!" %}
+    </div>
+    {% endif %}
+</div>
+{% endblock %} 

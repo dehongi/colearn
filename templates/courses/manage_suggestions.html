@@ -1,0 +1,51 @@
+{% extends "courses/base.html" %}
+
+{% block courses_title %}Manage Suggestions{% endblock %}
+
+{% block courses_content %}
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h1>Manage Suggestions</h1>
+    <a href="{% url 'courses:instructor_dashboard' %}" class="btn btn-outline-primary">
+        <i class="bi bi-arrow-left"></i> Back to Dashboard
+    </a>
+</div>
+
+{% if suggestions %}
+<div class="card">
+    <div class="list-group list-group-flush">
+        {% for suggestion in suggestions %}
+        <div class="list-group-item">
+            <div class="d-flex justify-content-between align-items-start mb-2">
+                <div>
+                    <h2 class="h6 mb-1">{{ suggestion.lesson.title }}</h2>
+                    <p class="text-muted small mb-0">
+                        From {{ suggestion.user.get_full_name|default:suggestion.user.username }} • 
+                        {{ suggestion.created_at|date:"F j, Y" }}
+                    </p>
+                </div>
+                <span class="badge {% if suggestion.status == 'APPROVED' %}bg-success{% elif suggestion.status == 'REJECTED' %}bg-danger{% else %}bg-warning{% endif %}">
+                    {{ suggestion.get_status_display }}
+                </span>
+            </div>
+            <p class="mb-3">{{ suggestion.content }}</p>
+            {% if suggestion.status == 'PENDING' %}
+            <form method="post" class="d-flex gap-2">
+                {% csrf_token %}
+                <input type="hidden" name="suggestion_id" value="{{ suggestion.id }}">
+                {{ form.status }}
+                <button type="submit" class="btn btn-primary btn-sm">Update Status</button>
+            </form>
+            {% endif %}
+        </div>
+        {% endfor %}
+    </div>
+</div>
+{% else %}
+<div class="card">
+    <div class="card-body text-center py-5">
+        <h2 class="h4 mb-3">No Suggestions Yet</h2>
+        <p class="text-muted mb-0">When learners suggest improvements to your courses, they will appear here.</p>
+    </div>
+</div>
+{% endif %}
+{% endblock %} 

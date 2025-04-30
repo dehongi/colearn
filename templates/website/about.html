@@ -1,0 +1,65 @@
+{% extends 'base.html' %}
+
+{% block title %}About - CoLearn{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <div class="row">
+        <div class="col-lg-8 mx-auto">
+            <h1 class="text-center mb-4">About CoLearn</h1>
+            
+            <div class="card shadow-sm mb-4">
+                <div class="card-body">
+                    <h2 class="h4 mb-3">Our Mission</h2>
+                    <p>CoLearn is dedicated to revolutionizing online education by creating a dynamic, collaborative learning environment where knowledge is continuously refined and improved through community participation.</p>
+                </div>
+            </div>
+
+            <div class="card shadow-sm mb-4">
+                <div class="card-body">
+                    <h2 class="h4 mb-3">What Makes Us Different</h2>
+                    <ul class="list-unstyled">
+                        <li class="mb-3">
+                            <i class="bi bi-check-circle-fill text-primary me-2"></i>
+                            <strong>Community-Driven Content:</strong> Learners can suggest improvements and additions to course materials.
+                        </li>
+                        <li class="mb-3">
+                            <i class="bi bi-check-circle-fill text-primary me-2"></i>
+                            <strong>Expert-Led Quality:</strong> All content is created and moderated by subject matter experts.
+                        </li>
+                        <li class="mb-3">
+                            <i class="bi bi-check-circle-fill text-primary me-2"></i>
+                            <strong>Continuous Improvement:</strong> Course content evolves based on learner feedback and industry changes.
+                        </li>
+                        <li class="mb-3">
+                            <i class="bi bi-check-circle-fill text-primary me-2"></i>
+                            <strong>Collaborative Learning:</strong> A platform where both instructors and learners contribute to knowledge sharing.
+                        </li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="card shadow-sm mb-4">
+                <div class="card-body">
+                    <h2 class="h4 mb-3">Our Team</h2>
+                    <p>CoLearn is built by a team of passionate educators, developers, and learning enthusiasts who believe in the power of collaborative knowledge sharing. Our diverse team brings together expertise from various fields to create an innovative learning platform.</p>
+                </div>
+            </div>
+
+            <div class="card shadow-sm">
+                <div class="card-body">
+                    <h2 class="h4 mb-3">Join Our Community</h2>
+                    <p>Whether you're an expert looking to share your knowledge or a learner eager to grow, CoLearn provides the perfect platform for collaborative learning and teaching.</p>
+                    <div class="text-center mt-4">
+                        {% if not user.is_authenticated %}
+                            <a href="{% url 'accounts:register' %}" class="btn btn-primary">Get Started</a>
+                        {% else %}
+                            <a href="{% url 'courses:course_list' %}" class="btn btn-primary">Browse Courses</a>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %} 

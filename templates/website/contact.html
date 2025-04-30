@@ -1,0 +1,73 @@
+{% extends 'base.html' %}
+
+{% block title %}Contact - CoLearn{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <div class="row">
+        <div class="col-lg-8 mx-auto">
+            <h1 class="text-center mb-4">Contact Us</h1>
+            
+            <div class="card shadow-sm mb-4">
+                <div class="card-body">
+                    <h2 class="h4 mb-3">Get in Touch</h2>
+                    <p class="text-muted">Have questions or feedback? We'd love to hear from you. Fill out the form below and we'll get back to you as soon as possible.</p>
+                    
+                    <form method="post" class="mt-4">
+                        {% csrf_token %}
+                        <div class="mb-3">
+                            <label for="name" class="form-label">Name</label>
+                            <input type="text" class="form-control" id="name" name="name" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="email" class="form-label">Email</label>
+                            <input type="email" class="form-control" id="email" name="email" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="subject" class="form-label">Subject</label>
+                            <input type="text" class="form-control" id="subject" name="subject" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="message" class="form-label">Message</label>
+                            <textarea class="form-control" id="message" name="message" rows="5" required></textarea>
+                        </div>
+                        <div class="d-grid">
+                            <button type="submit" class="btn btn-primary">Send Message</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+            <div class="card shadow-sm">
+                <div class="card-body">
+                    <h2 class="h4 mb-3">Other Ways to Reach Us</h2>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <h3 class="h5 mb-3">Email</h3>
+                            <p class="mb-4">
+                                <i class="bi bi-envelope-fill text-primary me-2"></i>
+                                <a href="mailto:support@colearn.com">support@colearn.com</a>
+                            </p>
+                        </div>
+                        <div class="col-md-6">
+                            <h3 class="h5 mb-3">Follow Us</h3>
+                            <p class="mb-2">
+                                <i class="bi bi-twitter text-primary me-2"></i>
+                                <a href="#" target="_blank">Twitter</a>
+                            </p>
+                            <p class="mb-2">
+                                <i class="bi bi-linkedin text-primary me-2"></i>
+                                <a href="#" target="_blank">LinkedIn</a>
+                            </p>
+                            <p class="mb-2">
+                                <i class="bi bi-github text-primary me-2"></i>
+                                <a href="#" target="_blank">GitHub</a>
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %} 

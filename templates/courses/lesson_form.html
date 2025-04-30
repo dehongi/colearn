@@ -1,0 +1,19 @@
+{% extends "courses/form_base.html" %}
+
+{% block courses_title %}
+{% if form.instance.pk %}Edit Lesson{% else %}Add Lesson{% endif %} - {{ module.title }}
+{% endblock %}
+
+{% block form_title %}
+{% if form.instance.pk %}
+Edit Lesson: {{ form.instance.title }}
+{% else %}
+Add New Lesson to {{ module.title }}
+{% endif %}
+{% endblock %}
+
+{% block form_submit_text %}
+{% if form.instance.pk %}Update Lesson{% else %}Add Lesson{% endif %}
+{% endblock %}
+
+{% block form_cancel_url %}{% url 'courses:course_detail' course.slug %}{% endblock %} 

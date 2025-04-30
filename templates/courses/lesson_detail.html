@@ -1,0 +1,73 @@
+{% extends "courses/base.html" %}
+
+{% block courses_title %}{{ lesson.title }} - {{ course.title }}{% endblock %}
+
+{% block courses_content %}
+<nav aria-label="breadcrumb" class="mb-4">
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a href="{% url 'courses:course_detail' course.slug %}">{{ course.title }}</a></li>
+        <li class="breadcrumb-item">{{ lesson.module.title }}</li>
+        <li class="breadcrumb-item active" aria-current="page">{{ lesson.title }}</li>
+    </ol>
+</nav>
+
+<div class="row">
+    <div class="col-lg-8">
+        <!-- Lesson Content -->
+        <div class="card mb-4">
+            <div class="card-body">
+                <h1 class="card-title h2 mb-4">{{ lesson.title }}</h1>
+                <div class="lesson-content">
+                    {{ lesson.content|linebreaks }}
+                </div>
+            </div>
+        </div>
+
+        <!-- Suggestion Form -->
+        <div class="card">
+            <div class="card-header">
+                <h2 class="h5 mb-0">Suggest an Improvement</h2>
+            </div>
+            <div class="card-body">
+                <form method="post">
+                    {% csrf_token %}
+                    {% for field in form %}
+                    <div class="mb-3">
+                        {{ field.label_tag }}
+                        {{ field }}
+                        {% if field.help_text %}
+                        <div class="form-text">{{ field.help_text }}</div>
+                        {% endif %}
+                        {% if field.errors %}
+                        <div class="invalid-feedback d-block">
+                            {% for error in field.errors %}
+                            {{ error }}
+                            {% endfor %}
+                        </div>
+                        {% endif %}
+                    </div>
+                    {% endfor %}
+                    <button type="submit" class="btn btn-primary">Submit Suggestion</button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-lg-4">
+        <!-- Module Navigation -->
+        <div class="card">
+            <div class="card-header">
+                <h3 class="h5 mb-0">Module Lessons</h3>
+            </div>
+            <div class="list-group list-group-flush">
+                {% for module_lesson in lesson.module.lessons.all %}
+                <a href="{% url 'courses:lesson_detail' course.slug module_lesson.id %}" 
+                   class="list-group-item list-group-item-action {% if module_lesson == lesson %}active{% endif %}">
+                    {{ module_lesson.title }}
+                </a>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %} 

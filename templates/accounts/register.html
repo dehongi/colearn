@@ -1,0 +1,38 @@
+{% extends 'base.html' %}
+
+{% block title %}Register - CoLearn{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-8 col-lg-6">
+        <div class="card shadow">
+            <div class="card-body">
+                <h2 class="card-title text-center mb-4">Create an Account</h2>
+                <form method="post" novalidate>
+                    {% csrf_token %}
+                    {% for field in form %}
+                        <div class="mb-3">
+                            {{ field.label_tag }}
+                            {{ field }}
+                            {% if field.help_text %}
+                                <div class="form-text">{{ field.help_text }}</div>
+                            {% endif %}
+                            {% if field.errors %}
+                                <div class="invalid-feedback d-block">
+                                    {{ field.errors|join:", " }}
+                                </div>
+                            {% endif %}
+                        </div>
+                    {% endfor %}
+                    <div class="d-grid gap-2">
+                        <button type="submit" class="btn btn-primary">Register</button>
+                    </div>
+                </form>
+                <div class="text-center mt-3">
+                    <p class="mb-0">Already have an account? <a href="{% url 'accounts:login' %}">Login here</a></p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %} 

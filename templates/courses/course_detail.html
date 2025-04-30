@@ -1,0 +1,142 @@
+{% extends "courses/base.html" %}
+{% load static %}
+
+{% block courses_title %}{{ course.title }}{% endblock %}
+
+{% block courses_content %}
+<div class="row">
+    <!-- Course Info -->
+    <div class="col-lg-8">
+        <div class="card mb-4">
+            {% if course.thumbnail %}
+            <img src="{{ course.thumbnail.url }}" class="card-img-top" alt="{{ course.title }}">
+            {% else %}
+            <img src="{% static 'images/course-placeholder.jpg' %}" class="card-img-top" alt="{{ course.title }}">
+            {% endif %}
+            <div class="card-body">
+                <h1 class="card-title h2">{{ course.title }}</h1>
+                <p class="text-muted mb-3">
+                    By {{ course.instructor.get_full_name|default:course.instructor.username }}
+                </p>
+                <p class="card-text">{{ course.description }}</p>
+            </div>
+        </div>
+
+        <!-- Course Content -->
+        {% if is_enrolled or course.instructor == user %}
+        <div class="card">
+            <div class="card-header d-flex justify-content-between align-items-center">
+                <h2 class="h5 mb-0">Course Content</h2>
+                {% if course.instructor == user %}
+                <a href="{% url 'courses:create_module' course.slug %}" class="btn btn-sm btn-outline-primary">
+                    <i class="bi bi-plus-lg"></i> Add Module
+                </a>
+                {% endif %}
+            </div>
+            <div class="list-group list-group-flush">
+                {% for module in modules %}
+                <div class="list-group-item">
+                    <div class="d-flex justify-content-between align-items-center mb-2">
+                        <h3 class="h6 mb-0">{{ module.title }}</h3>
+                        {% if course.instructor == user %}
+                        <div class="btn-group">
+                            <a href="{% url 'courses:create_lesson' course.slug module.id %}" class="btn btn-sm btn-outline-primary">
+                                <i class="bi bi-plus-lg"></i> Add Lesson
+                            </a>
+                            <a href="{% url 'courses:edit_module' course.slug module.id %}" class="btn btn-sm btn-outline-secondary">
+                                <i class="bi bi-pencil"></i>
+                            </a>
+                            <a href="{% url 'courses:delete_module' course.slug module.id %}" class="btn btn-sm btn-outline-danger">
+                                <i class="bi bi-trash"></i>
+                            </a>
+                        </div>
+                        {% endif %}
+                    </div>
+                    {% if module.description %}
+                    <p class="small text-muted mb-2">{{ module.description }}</p>
+                    {% endif %}
+                    
+                    <!-- Lessons -->
+                    <div class="list-group list-group-flush">
+                        {% for lesson in module.lessons.all %}
+                        <div class="list-group-item list-group-item-action d-flex justify-content-between align-items-center">
+                            <a href="{% url 'courses:lesson_detail' course.slug lesson.id %}" class="text-decoration-none text-dark flex-grow-1">
+                                {{ lesson.title }}
+                            </a>
+                            {% if course.instructor == user %}
+                            <div class="btn-group">
+                                <a href="{% url 'courses:edit_lesson' course.slug module.id lesson.id %}" class="btn btn-sm btn-outline-secondary">
+                                    <i class="bi bi-pencil"></i>
+                                </a>
+                                <a href="{% url 'courses:delete_lesson' course.slug module.id lesson.id %}" class="btn btn-sm btn-outline-danger">
+                                    <i class="bi bi-trash"></i>
+                                </a>
+                            </div>
+                            {% endif %}
+                        </div>
+                        {% empty %}
+                        <div class="list-group-item text-muted small">No lessons yet</div>
+                        {% endfor %}
+                    </div>
+                </div>
+                {% empty %}
+                <div class="list-group-item text-center py-4">
+                    <p class="text-muted mb-0">No modules yet</p>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+        {% else %}
+        <div class="card">
+            <div class="card-body text-center">
+                <h2 class="h4 mb-3">Enroll to Access Course Content</h2>
+                <p class="text-muted mb-4">Join this course to access all lessons and materials.</p>
+                <form method="post" action="{% url 'courses:enroll_course' course.slug %}">
+                    {% csrf_token %}
+                    <button type="submit" class="btn btn-primary btn-lg">Enroll Now</button>
+                </form>
+            </div>
+        </div>
+        {% endif %}
+    </div>
+
+    <!-- Sidebar -->
+    <div class="col-lg-4">
+        {% if course.instructor == user %}
+        <div class="card mb-4">
+            <div class="card-header">
+                <h3 class="h5 mb-0">Course Management</h3>
+            </div>
+            <div class="list-group list-group-flush">
+                <a href="{% url 'courses:edit_course' course.slug %}" class="list-group-item list-group-item-action">
+                    <i class="bi bi-pencil me-2"></i> Edit Course
+                </a>
+                <a href="{% url 'courses:manage_suggestions' %}" class="list-group-item list-group-item-action">
+                    <i class="bi bi-chat-right-text me-2"></i> Manage Suggestions
+                </a>
+            </div>
+        </div>
+        {% endif %}
+
+        <div class="card">
+            <div class="card-header">
+                <h3 class="h5 mb-0">Course Information</h3>
+            </div>
+            <div class="list-group list-group-flush">
+                <div class="list-group-item">
+                    <div class="small text-muted">Created</div>
+                    <div>{{ course.created_at|date:"F j, Y" }}</div>
+                </div>
+                <div class="list-group-item">
+                    <div class="small text-muted">Last Updated</div>
+                    <div>{{ course.updated_at|date:"F j, Y" }}</div>
+                </div>
+                <div class="list-group-item">
+                    <div class="small text-muted">Price</div>
+                    <div>{% if course.price > 0 %}${{ course.price }}{% else %}Free{% endif %}</div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %} 

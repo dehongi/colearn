@@ -1,0 +1,73 @@
+{% extends 'base.html' %}
+
+{% block title %}Home - CoLearn{% endblock %}
+
+{% block content %}
+<!-- Hero Section -->
+<section class="py-5 text-center">
+    <div class="row py-lg-5">
+        <div class="col-lg-6 col-md-8 mx-auto">
+            <h1 class="fw-light">Welcome to CoLearn</h1>
+            <p class="lead text-muted">A collaborative learning platform where knowledge grows through community participation. Join experts and learners in creating and improving educational content.</p>
+            <p>
+                {% if user.is_authenticated %}
+                    <a href="{% url 'courses:course_list' %}" class="btn btn-primary my-2">Browse Courses</a>
+                    {% if user.is_instructor %}
+                        <a href="{% url 'courses:instructor_dashboard' %}" class="btn btn-secondary my-2">Instructor Dashboard</a>
+                    {% endif %}
+                {% else %}
+                    <a href="{% url 'accounts:register' %}" class="btn btn-primary my-2">Get Started</a>
+                    <a href="{% url 'accounts:login' %}" class="btn btn-secondary my-2">Login</a>
+                {% endif %}
+            </p>
+        </div>
+    </div>
+</section>
+
+<!-- Features Section -->
+<div class="container">
+    <h2 class="text-center mb-4">Why Choose CoLearn?</h2>
+    <div class="row g-4 py-5">
+        <div class="col-md-4">
+            <div class="card h-100">
+                <div class="card-body text-center">
+                    <i class="bi bi-people-fill text-primary" style="font-size: 2rem;"></i>
+                    <h3 class="card-title h5 mt-3">Collaborative Learning</h3>
+                    <p class="card-text">Contribute to course content through suggestions and feedback, making learning a community effort.</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card h-100">
+                <div class="card-body text-center">
+                    <i class="bi bi-mortarboard-fill text-primary" style="font-size: 2rem;"></i>
+                    <h3 class="card-title h5 mt-3">Expert-Led Courses</h3>
+                    <p class="card-text">Learn from industry professionals and subject matter experts who create and curate high-quality content.</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card h-100">
+                <div class="card-body text-center">
+                    <i class="bi bi-lightning-charge-fill text-primary" style="font-size: 2rem;"></i>
+                    <h3 class="card-title h5 mt-3">Dynamic Content</h3>
+                    <p class="card-text">Course content evolves with community input, ensuring up-to-date and relevant learning materials.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Call to Action -->
+<section class="py-5 bg-light">
+    <div class="container text-center">
+        <h2>Ready to Start Learning?</h2>
+        <p class="lead">Join our community of learners and instructors today.</p>
+        {% if not user.is_authenticated %}
+            <a href="{% url 'accounts:register' %}" class="btn btn-primary btn-lg">Create Free Account</a>
+        {% else %}
+            <a href="{% url 'courses:course_list' %}" class="btn btn-primary btn-lg">Browse Courses</a>
+        {% endif %}
+    </div>
+</section>
+{% endblock %} 

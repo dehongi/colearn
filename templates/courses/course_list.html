@@ -1,0 +1,63 @@
+{% extends "courses/base.html" %}
+{% load static %}
+
+{% block courses_title %}Browse Courses{% endblock %}
+
+{% block courses_content %}
+<div class="row mb-4">
+    <div class="col-md-8">
+        <h1 class="mb-4">Browse Courses</h1>
+    </div>
+    <div class="col-md-4">
+        <form method="get" class="d-flex">
+            <input type="search" name="q" class="form-control me-2" placeholder="Search courses..." value="{{ request.GET.q }}">
+            <button type="submit" class="btn btn-outline-primary">Search</button>
+        </form>
+    </div>
+</div>
+
+{% if courses %}
+<div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
+    {% for course in courses %}
+    <div class="col">
+        <div class="card h-100">
+            {% if course.thumbnail %}
+            <img src="{{ course.thumbnail.url }}" class="card-img-top" alt="{{ course.title }}">
+            {% else %}
+            <img src="{% static 'images/course-placeholder.jpg' %}" class="card-img-top" alt="{{ course.title }}">
+            {% endif %}
+            <div class="card-body">
+                <h5 class="card-title">{{ course.title }}</h5>
+                <p class="card-text text-muted mb-2">
+                    <small>By {{ course.instructor.get_full_name|default:course.instructor.username }}</small>
+                </p>
+                <p class="card-text">{{ course.description|truncatewords:30 }}</p>
+            </div>
+            <div class="card-footer bg-transparent border-top-0">
+                <div class="d-grid">
+                    <a href="{% url 'courses:course_detail' course.slug %}" class="btn btn-primary">View Course</a>
+                </div>
+            </div>
+        </div>
+    </div>
+    {% endfor %}
+</div>
+{% else %}
+<div class="text-center py-5">
+    <h3 class="text-muted">No courses found</h3>
+    {% if request.GET.q %}
+    <p class="mb-0">Try different search terms or <a href="{% url 'courses:course_list' %}">browse all courses</a>.</p>
+    {% else %}
+    <p class="mb-0">Check back later for new courses.</p>
+    {% endif %}
+</div>
+{% endif %}
+
+{% if user.is_authenticated and user.role == 'INSTRUCTOR' %}
+<div class="position-fixed bottom-0 end-0 p-4">
+    <a href="{% url 'courses:create_course' %}" class="btn btn-primary btn-lg rounded-circle shadow">
+        <i class="bi bi-plus-lg"></i>
+    </a>
+</div>
+{% endif %}
+{% endblock %} 

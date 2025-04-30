@@ -1,0 +1,61 @@
+{% extends "social/base.html" %}
+{% load i18n %}
+
+{% block social_content %}
+<div class="mb-4">
+    <nav aria-label="breadcrumb">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href="{% url 'social:discussion_list' %}">{% trans "Discussions" %}</a></li>
+            <li class="breadcrumb-item active">{% trans "Activity" %}</li>
+        </ol>
+    </nav>
+</div>
+
+<div class="card">
+    <div class="card-body">
+        <h1 class="h2 mb-4">{% trans "Your Activity" %}</h1>
+
+        {% if activities %}
+        <div class="timeline">
+            {% for activity in activities %}
+            <div class="timeline-item mb-4">
+                <div class="d-flex">
+                    <div class="timeline-icon me-3">
+                        {% if activity.activity_type == 'DISCUSSION_CREATED' %}
+                        <i class="bi bi-chat-square-text-fill text-primary fs-4"></i>
+                        {% elif activity.activity_type == 'COMMENT_ADDED' %}
+                        <i class="bi bi-chat-dots-fill text-success fs-4"></i>
+                        {% elif activity.activity_type == 'REACTION_ADDED' %}
+                        <i class="bi bi-emoji-smile-fill text-warning fs-4"></i>
+                        {% elif activity.activity_type == 'SOLUTION_MARKED' %}
+                        <i class="bi bi-check-circle-fill text-success fs-4"></i>
+                        {% endif %}
+                    </div>
+                    <div class="timeline-content">
+                        <div class="d-flex justify-content-between align-items-center mb-1">
+                            <h5 class="mb-0">{{ activity.get_activity_type_display }}</h5>
+                            <small class="text-muted">
+                                {{ activity.created_at|timesince }} {% trans "ago" %}
+                            </small>
+                        </div>
+                        <p class="mb-0">
+                            {% if activity.discussion %}
+                            {% trans "in" %} 
+                            <a href="{% url 'social:discussion_detail' activity.discussion.slug %}">
+                                {{ activity.discussion.title }}
+                            </a>
+                            {% endif %}
+                        </p>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+        {% else %}
+        <div class="alert alert-info">
+            {% trans "No activity yet." %}
+        </div>
+        {% endif %}
+    </div>
+</div>
+{% endblock %} 
