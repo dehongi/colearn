@@ -9,6 +9,14 @@ urlpatterns = [
     path("discussion/create/", views.create_discussion, name="create_discussion"),
     path("discussion/<slug:slug>/", views.discussion_detail, name="discussion_detail"),
     path("discussion/<slug:slug>/edit/", views.edit_discussion, name="edit_discussion"),
+    path(
+        "discussion/<slug:slug>/close/", views.close_discussion, name="close_discussion"
+    ),
+    path(
+        "discussion/<slug:slug>/reopen/",
+        views.reopen_discussion,
+        name="reopen_discussion",
+    ),
     # Comment URLs
     path("discussion/<slug:slug>/comment/", views.add_comment, name="add_comment"),
     path("comment/<int:comment_id>/reply/", views.add_reply, name="add_reply"),

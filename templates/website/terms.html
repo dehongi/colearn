@@ -4,56 +4,177 @@
 
 {% block content %}
 <div class="container py-5">
-    <div class="row">
-        <div class="col-lg-8 mx-auto">
-            <h1 class="text-center mb-4">Terms of Service</h1>
-            
-            <div class="card shadow-sm mb-4">
-                <div class="card-body">
-                    <h2 class="h4 mb-3">1. Acceptance of Terms</h2>
-                    <p>By accessing and using CoLearn, you accept and agree to be bound by the terms and provision of this agreement.</p>
+    <div class="row mb-5">
+        <div class="col-lg-8 mx-auto text-center">
+            <h1 class="fw-bold mb-4">Terms of <span class="text-primary">Service</span></h1>
+            <p class="lead text-muted mx-auto" style="max-width: 700px;">These Terms of Service govern your use of the CoLearn platform. Please read them carefully before using our services.</p>
+            <p class="text-muted"><small><em>Last updated: April 30, 2025</em></small></p>
+        </div>
+    </div>
+
+    <div class="row g-4">
+        <!-- Table of Contents -->
+        <div class="col-lg-4 mb-4 mb-lg-0">
+            <div class="card border-0 shadow-sm sticky-lg-top" style="top: 2rem; z-index: 999;">
+                <div class="card-body p-4">
+                    <h5 class="fw-bold mb-3">
+                        <i class="bi bi-list-nested text-primary me-2"></i>
+                        Contents
+                    </h5>
+                    <div class="list-group list-group-flush">
+                        <a href="#acceptance" class="list-group-item list-group-item-action border-0 ps-0 py-2">
+                            <i class="bi bi-chevron-right text-primary me-2"></i>Acceptance of Terms
+                        </a>
+                        <a href="#license" class="list-group-item list-group-item-action border-0 ps-0 py-2">
+                            <i class="bi bi-chevron-right text-primary me-2"></i>Use License
+                        </a>
+                        <a href="#content" class="list-group-item list-group-item-action border-0 ps-0 py-2">
+                            <i class="bi bi-chevron-right text-primary me-2"></i>User Content
+                        </a>
+                        <a href="#disclaimer" class="list-group-item list-group-item-action border-0 ps-0 py-2">
+                            <i class="bi bi-chevron-right text-primary me-2"></i>Disclaimer
+                        </a>
+                        <a href="#limitations" class="list-group-item list-group-item-action border-0 ps-0 py-2">
+                            <i class="bi bi-chevron-right text-primary me-2"></i>Limitations
+                        </a>
+                        <a href="#revisions" class="list-group-item list-group-item-action border-0 ps-0 py-2">
+                            <i class="bi bi-chevron-right text-primary me-2"></i>Revisions and Errata
+                        </a>
+                        <a href="#contact" class="list-group-item list-group-item-action border-0 ps-0 py-2">
+                            <i class="bi bi-chevron-right text-primary me-2"></i>Contact Information
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Content -->
+        <div class="col-lg-8">
+            <div id="acceptance" class="card border-0 shadow-sm mb-4">
+                <div class="card-body p-4">
+                    <div class="d-flex align-items-center mb-3">
+                        <span class="d-inline-block bg-primary bg-opacity-10 text-primary p-3 rounded-circle me-3">
+                            <i class="bi bi-check-circle" style="font-size: 2rem;"></i>
+                        </span>
+                        <h2 class="h3 fw-bold mb-0">1. Acceptance of Terms</h2>
+                    </div>
+                    <p>By accessing and using CoLearn, you acknowledge that you have read, understood, and agree to be bound by these Terms of Service. If you do not agree with any part of these terms, you must not use our services.</p>
                 </div>
             </div>
 
-            <div class="card shadow-sm mb-4">
-                <div class="card-body">
-                    <h2 class="h4 mb-3">2. Use License</h2>
-                    <p>Permission is granted to temporarily access the materials (information or software) on CoLearn's website for personal, non-commercial transitory viewing only.</p>
+            <div id="license" class="card border-0 shadow-sm mb-4">
+                <div class="card-body p-4">
+                    <div class="d-flex align-items-center mb-3">
+                        <span class="d-inline-block bg-primary bg-opacity-10 text-primary p-3 rounded-circle me-3">
+                            <i class="bi bi-file-earmark-text" style="font-size: 2rem;"></i>
+                        </span>
+                        <h2 class="h3 fw-bold mb-0">2. Use License</h2>
+                    </div>
+                    <p>Permission is granted to temporarily access the materials on CoLearn's website for personal, non-commercial educational purposes only. This is the grant of a license, not a transfer of title, and under this license you may not:</p>
+                    <ul>
+                        <li class="mb-2">Modify or copy the materials except as specifically allowed</li>
+                        <li class="mb-2">Use the materials for any commercial purpose</li>
+                        <li class="mb-2">Attempt to decompile or reverse engineer any software contained on the platform</li>
+                        <li class="mb-2">Remove any copyright or other proprietary notations</li>
+                        <li class="mb-2">Transfer the materials to another person or "mirror" the materials on any other server</li>
+                    </ul>
                 </div>
             </div>
 
-            <div class="card shadow-sm mb-4">
-                <div class="card-body">
-                    <h2 class="h4 mb-3">3. User Content</h2>
+            <div id="content" class="card border-0 shadow-sm mb-4">
+                <div class="card-body p-4">
+                    <div class="d-flex align-items-center mb-3">
+                        <span class="d-inline-block bg-primary bg-opacity-10 text-primary p-3 rounded-circle me-3">
+                            <i class="bi bi-pencil-square" style="font-size: 2rem;"></i>
+                        </span>
+                        <h2 class="h3 fw-bold mb-0">3. User Content</h2>
+                    </div>
                     <p>Users may post content as long as it isn't illegal, obscene, threatening, defamatory, invasive of privacy, infringing of intellectual property rights, or otherwise injurious to third parties.</p>
+                    <p>By posting content, you grant CoLearn a worldwide, non-exclusive, royalty-free license to use, reproduce, modify, and distribute your content in connection with the service.</p>
                 </div>
             </div>
 
-            <div class="card shadow-sm mb-4">
-                <div class="card-body">
-                    <h2 class="h4 mb-3">4. Disclaimer</h2>
+            <div id="disclaimer" class="card border-0 shadow-sm mb-4">
+                <div class="card-body p-4">
+                    <div class="d-flex align-items-center mb-3">
+                        <span class="d-inline-block bg-primary bg-opacity-10 text-primary p-3 rounded-circle me-3">
+                            <i class="bi bi-exclamation-triangle" style="font-size: 2rem;"></i>
+                        </span>
+                        <h2 class="h3 fw-bold mb-0">4. Disclaimer</h2>
+                    </div>
                     <p>The materials on CoLearn's website are provided on an 'as is' basis. CoLearn makes no warranties, expressed or implied, and hereby disclaims and negates all other warranties including, without limitation, implied warranties or conditions of merchantability, fitness for a particular purpose, or non-infringement of intellectual property or other violation of rights.</p>
                 </div>
             </div>
 
-            <div class="card shadow-sm mb-4">
-                <div class="card-body">
-                    <h2 class="h4 mb-3">5. Limitations</h2>
+            <div id="limitations" class="card border-0 shadow-sm mb-4">
+                <div class="card-body p-4">
+                    <div class="d-flex align-items-center mb-3">
+                        <span class="d-inline-block bg-primary bg-opacity-10 text-primary p-3 rounded-circle me-3">
+                            <i class="bi bi-shield" style="font-size: 2rem;"></i>
+                        </span>
+                        <h2 class="h3 fw-bold mb-0">5. Limitations</h2>
+                    </div>
                     <p>In no event shall CoLearn or its suppliers be liable for any damages (including, without limitation, damages for loss of data or profit, or due to business interruption) arising out of the use or inability to use the materials on CoLearn's website.</p>
+                    <p>Because some jurisdictions do not allow limitations on implied warranties, these limitations may not apply to you.</p>
                 </div>
             </div>
 
-            <div class="card shadow-sm mb-4">
-                <div class="card-body">
-                    <h2 class="h4 mb-3">6. Revisions and Errata</h2>
+            <div id="revisions" class="card border-0 shadow-sm mb-4">
+                <div class="card-body p-4">
+                    <div class="d-flex align-items-center mb-3">
+                        <span class="d-inline-block bg-primary bg-opacity-10 text-primary p-3 rounded-circle me-3">
+                            <i class="bi bi-arrow-repeat" style="font-size: 2rem;"></i>
+                        </span>
+                        <h2 class="h3 fw-bold mb-0">6. Revisions and Errata</h2>
+                    </div>
                     <p>The materials appearing on CoLearn's website could include technical, typographical, or photographic errors. CoLearn does not warrant that any of the materials on its website are accurate, complete, or current.</p>
+                    <p>CoLearn may make changes to the materials contained on its website at any time without notice. CoLearn does not, however, make any commitment to update the materials.</p>
                 </div>
             </div>
 
-            <div class="card shadow-sm">
-                <div class="card-body">
-                    <h2 class="h4 mb-3">7. Contact Information</h2>
-                    <p>If you have any questions about these Terms of Service, please contact us at <a href="mailto:support@colearn.com">support@colearn.com</a>.</p>
+            <div id="contact" class="card border-0 shadow-sm mb-4">
+                <div class="card-body p-4">
+                    <div class="d-flex align-items-center mb-3">
+                        <span class="d-inline-block bg-primary bg-opacity-10 text-primary p-3 rounded-circle me-3">
+                            <i class="bi bi-envelope" style="font-size: 2rem;"></i>
+                        </span>
+                        <h2 class="h3 fw-bold mb-0">7. Contact Information</h2>
+                    </div>
+                    <p>If you have any questions about these Terms of Service, please contact us:</p>
+                    <div class="row">
+                        <div class="col-md-6 mb-3 mb-md-0">
+                            <div class="card bg-light border-0">
+                                <div class="card-body p-3">
+                                    <h5 class="mb-2"><i class="bi bi-envelope-fill me-2 text-primary"></i>Email</h5>
+                                    <p class="mb-0"><a href="mailto:legal@colearn.com" class="text-decoration-none">legal@colearn.com</a></p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="card bg-light border-0">
+                                <div class="card-body p-3">
+                                    <h5 class="mb-2"><i class="bi bi-geo-alt-fill me-2 text-primary"></i>Address</h5>
+                                    <p class="mb-0">CoLearn Legal Department<br>123 Learning Street<br>Dubai, UAE</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Call to Action -->
+            <div class="card border-0 bg-primary text-white shadow rounded-3">
+                <div class="card-body p-4 text-center">
+                    <h3 class="h4 fw-bold mb-3">Have questions about our terms?</h3>
+                    <p class="mb-4">Our support team is here to help you understand our policies.</p>
+                    <div class="d-flex justify-content-center gap-3">
+                        <a href="{% url 'website:contact' %}" class="btn btn-light px-4 text-primary shadow-sm">
+                            <i class="bi bi-chat-dots me-2"></i>Contact Support
+                        </a>
+                        <a href="{% url 'website:privacy' %}" class="btn btn-outline-light px-4">
+                            <i class="bi bi-shield-lock me-2"></i>Privacy Policy
+                        </a>
+                    </div>
                 </div>
             </div>
         </div>

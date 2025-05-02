@@ -8,6 +8,8 @@ urlpatterns = [
     path("", views.course_list, name="course_list"),
     path("<slug:slug>/", views.course_detail, name="course_detail"),
     path("<slug:slug>/enroll/", views.enroll_course, name="enroll_course"),
+    # Student dashboard
+    path("student/dashboard/", views.student_dashboard, name="student_dashboard"),
     # Instructor dashboard and course management
     path(
         "instructor/dashboard/", views.instructor_dashboard, name="instructor_dashboard"
@@ -16,6 +18,18 @@ urlpatterns = [
     path("instructor/course/<slug:slug>/edit/", views.edit_course, name="edit_course"),
     path(
         "instructor/suggestions/", views.manage_suggestions, name="manage_suggestions"
+    ),
+    # Category management
+    path("instructor/categories/", views.manage_categories, name="manage_categories"),
+    path(
+        "instructor/categories/<slug:slug>/edit/",
+        views.edit_category,
+        name="edit_category",
+    ),
+    path(
+        "instructor/categories/<slug:slug>/delete/",
+        views.delete_category,
+        name="delete_category",
     ),
     # Module management
     path(

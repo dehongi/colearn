@@ -2,87 +2,233 @@
 
 {% block title %}Privacy Policy - CoLearn{% endblock %}
 
+{% block extra_css %}
+<style>
+    .policy-section {
+        transition: transform 0.3s ease;
+    }
+    .policy-section:hover {
+        transform: translateY(-5px);
+    }
+    .policy-icon {
+        font-size: 2rem;
+    }
+    .table-of-contents a {
+        text-decoration: none;
+        transition: all 0.2s ease;
+        display: block;
+        padding: 8px 15px;
+        border-radius: 5px;
+    }
+    .table-of-contents a:hover {
+        background-color: rgba(67, 97, 238, 0.1);
+        transform: translateX(5px);
+    }
+    .last-updated {
+        font-style: italic;
+        font-size: 0.9rem;
+    }
+</style>
+{% endblock %}
+
 {% block content %}
 <div class="container py-5">
-    <div class="row">
-        <div class="col-lg-8 mx-auto">
-            <h1 class="text-center mb-4">Privacy Policy</h1>
-            
-            <div class="card shadow-sm mb-4">
-                <div class="card-body">
-                    <h2 class="h4 mb-3">1. Information We Collect</h2>
+    <div class="row mb-5">
+        <div class="col-lg-8 mx-auto text-center">
+            <h1 class="fw-bold mb-4">Privacy <span class="text-primary">Policy</span></h1>
+            <p class="lead text-muted mx-auto" style="max-width: 700px;">We respect your privacy and are committed to protecting your personal data. This privacy policy explains how we collect, use, and safeguard your information.</p>
+            <p class="text-muted"><small><em>Last updated: April 30, 2025</em></small></p>
+        </div>
+    </div>
+
+    <div class="row g-4">
+        <!-- Table of Contents -->
+        <div class="col-lg-4 mb-4 mb-lg-0">
+            <div class="card border-0 shadow-sm sticky-lg-top" style="top: 2rem; z-index: 999;">
+                <div class="card-body p-4">
+                    <h5 class="fw-bold mb-3">
+                        <i class="bi bi-list-nested text-primary me-2"></i>
+                        Contents
+                    </h5>
+                    <div class="list-group list-group-flush">
+                        <a href="#collect" class="list-group-item list-group-item-action border-0 ps-0 py-2">
+                            <i class="bi bi-chevron-right text-primary me-2"></i>Information We Collect
+                        </a>
+                        <a href="#use" class="list-group-item list-group-item-action border-0 ps-0 py-2">
+                            <i class="bi bi-chevron-right text-primary me-2"></i>How We Use Your Information
+                        </a>
+                        <a href="#share" class="list-group-item list-group-item-action border-0 ps-0 py-2">
+                            <i class="bi bi-chevron-right text-primary me-2"></i>Information Sharing
+                        </a>
+                        <a href="#security" class="list-group-item list-group-item-action border-0 ps-0 py-2">
+                            <i class="bi bi-chevron-right text-primary me-2"></i>Data Security
+                        </a>
+                        <a href="#rights" class="list-group-item list-group-item-action border-0 ps-0 py-2">
+                            <i class="bi bi-chevron-right text-primary me-2"></i>Your Rights
+                        </a>
+                        <a href="#cookies" class="list-group-item list-group-item-action border-0 ps-0 py-2">
+                            <i class="bi bi-chevron-right text-primary me-2"></i>Cookies
+                        </a>
+                        <a href="#contact" class="list-group-item list-group-item-action border-0 ps-0 py-2">
+                            <i class="bi bi-chevron-right text-primary me-2"></i>Contact Us
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Content -->
+        <div class="col-lg-8">
+            <div id="collect" class="card border-0 shadow-sm mb-4">
+                <div class="card-body p-4">
+                    <div class="d-flex align-items-center mb-3">
+                        <span class="d-inline-block bg-primary bg-opacity-10 text-primary p-3 rounded-circle me-3">
+                            <i class="bi bi-person-vcard" style="font-size: 2rem;"></i>
+                        </span>
+                        <h2 class="h3 fw-bold mb-0">1. Information We Collect</h2>
+                    </div>
                     <p>We collect information that you provide directly to us, including:</p>
                     <ul>
-                        <li>Account information (name, email, password)</li>
-                        <li>Profile information (bio, profile picture, location)</li>
-                        <li>Course-related information (enrollments, progress, feedback)</li>
-                        <li>Communication preferences</li>
+                        <li class="mb-2"><strong>Account information:</strong> Name, email address, password, and other details</li>
+                        <li class="mb-2"><strong>Profile information:</strong> Profile picture, bio, location, and professional information</li>
+                        <li class="mb-2"><strong>Course-related information:</strong> Enrollments, progress, feedback, and participation data</li>
+                        <li class="mb-2"><strong>Payment information:</strong> Credit card details and billing address (processed securely)</li>
+                        <li class="mb-2"><strong>Communication preferences:</strong> Your marketing and notification settings</li>
                     </ul>
                 </div>
             </div>
 
-            <div class="card shadow-sm mb-4">
-                <div class="card-body">
-                    <h2 class="h4 mb-3">2. How We Use Your Information</h2>
+            <div id="use" class="card border-0 shadow-sm mb-4">
+                <div class="card-body p-4">
+                    <div class="d-flex align-items-center mb-3">
+                        <span class="d-inline-block bg-primary bg-opacity-10 text-primary p-3 rounded-circle me-3">
+                            <i class="bi bi-gear" style="font-size: 2rem;"></i>
+                        </span>
+                        <h2 class="h3 fw-bold mb-0">2. How We Use Your Information</h2>
+                    </div>
                     <p>We use the information we collect to:</p>
                     <ul>
-                        <li>Provide, maintain, and improve our services</li>
-                        <li>Process and complete transactions</li>
-                        <li>Send you technical notices and support messages</li>
-                        <li>Communicate with you about products, services, and events</li>
-                        <li>Monitor and analyze trends and usage</li>
+                        <li class="mb-2">Provide, maintain, and improve our services</li>
+                        <li class="mb-2">Process and complete transactions</li>
+                        <li class="mb-2">Send you technical notices and support messages</li>
+                        <li class="mb-2">Communicate with you about products, services, and events</li>
+                        <li class="mb-2">Monitor and analyze trends and usage</li>
+                        <li class="mb-2">Personalize your experience with recommendations</li>
                     </ul>
                 </div>
             </div>
 
-            <div class="card shadow-sm mb-4">
-                <div class="card-body">
-                    <h2 class="h4 mb-3">3. Information Sharing</h2>
+            <div id="share" class="card border-0 shadow-sm mb-4">
+                <div class="card-body p-4">
+                    <div class="d-flex align-items-center mb-3">
+                        <span class="d-inline-block bg-primary bg-opacity-10 text-primary p-3 rounded-circle me-3">
+                            <i class="bi bi-share" style="font-size: 2rem;"></i>
+                        </span>
+                        <h2 class="h3 fw-bold mb-0">3. Information Sharing</h2>
+                    </div>
                     <p>We do not share your personal information with third parties except in the following circumstances:</p>
                     <ul>
-                        <li>With your consent</li>
-                        <li>To comply with legal obligations</li>
-                        <li>To protect and defend our rights and property</li>
-                        <li>With service providers who assist in our operations</li>
+                        <li class="mb-2">With your consent</li>
+                        <li class="mb-2">With service providers who assist in our operations</li>
+                        <li class="mb-2">To comply with legal obligations</li>
+                        <li class="mb-2">To protect and defend our rights and property</li>
+                        <li class="mb-2">In connection with a business transfer or acquisition</li>
                     </ul>
                 </div>
             </div>
 
-            <div class="card shadow-sm mb-4">
-                <div class="card-body">
-                    <h2 class="h4 mb-3">4. Data Security</h2>
-                    <p>We implement appropriate technical and organizational measures to protect your personal information against unauthorized access, alteration, disclosure, or destruction.</p>
+            <div id="security" class="card border-0 shadow-sm mb-4">
+                <div class="card-body p-4">
+                    <div class="d-flex align-items-center mb-3">
+                        <span class="d-inline-block bg-primary bg-opacity-10 text-primary p-3 rounded-circle me-3">
+                            <i class="bi bi-shield-lock" style="font-size: 2rem;"></i>
+                        </span>
+                        <h2 class="h3 fw-bold mb-0">4. Data Security</h2>
+                    </div>
+                    <p>We implement appropriate technical and organizational measures to protect your personal information against unauthorized access, alteration, disclosure, or destruction. These measures include encryption, access controls, secure infrastructure, and regular security audits.</p>
+                    <p>While we strive to protect your personal information, no method of transmission over the internet or electronic storage is 100% secure.</p>
                 </div>
             </div>
 
-            <div class="card shadow-sm mb-4">
-                <div class="card-body">
-                    <h2 class="h4 mb-3">5. Your Rights</h2>
+            <div id="rights" class="card border-0 shadow-sm mb-4">
+                <div class="card-body p-4">
+                    <div class="d-flex align-items-center mb-3">
+                        <span class="d-inline-block bg-primary bg-opacity-10 text-primary p-3 rounded-circle me-3">
+                            <i class="bi bi-person-check" style="font-size: 2rem;"></i>
+                        </span>
+                        <h2 class="h3 fw-bold mb-0">5. Your Rights</h2>
+                    </div>
                     <p>You have the right to:</p>
                     <ul>
-                        <li>Access your personal information</li>
-                        <li>Correct inaccurate information</li>
-                        <li>Request deletion of your information</li>
-                        <li>Object to processing of your information</li>
-                        <li>Data portability</li>
+                        <li class="mb-2">Access your personal information</li>
+                        <li class="mb-2">Correct inaccurate information</li>
+                        <li class="mb-2">Request deletion of your information</li>
+                        <li class="mb-2">Object to processing of your information</li>
+                        <li class="mb-2">Data portability</li>
                     </ul>
+                    <p>To exercise these rights, please contact us using the details provided in the "Contact Us" section.</p>
                 </div>
             </div>
 
-            <div class="card shadow-sm mb-4">
-                <div class="card-body">
-                    <h2 class="h4 mb-3">6. Cookies</h2>
-                    <p>We use cookies and similar tracking technologies to track activity on our website and hold certain information. You can instruct your browser to refuse all cookies or to indicate when a cookie is being sent.</p>
+            <div id="cookies" class="card border-0 shadow-sm mb-4">
+                <div class="card-body p-4">
+                    <div class="d-flex align-items-center mb-3">
+                        <span class="d-inline-block bg-primary bg-opacity-10 text-primary p-3 rounded-circle me-3">
+                            <i class="bi bi-cookie" style="font-size: 2rem;"></i>
+                        </span>
+                        <h2 class="h3 fw-bold mb-0">6. Cookies</h2>
+                    </div>
+                    <p>We use cookies and similar tracking technologies to track activity on our website and hold certain information. Cookies help us improve your experience by:</p>
+                    <ul>
+                        <li class="mb-2">Remembering your preferences and settings</li>
+                        <li class="mb-2">Understanding how you use our platform</li>
+                        <li class="mb-2">Enhancing security and functionality</li>
+                    </ul>
+                    <p>You can instruct your browser to refuse all cookies or to indicate when a cookie is being sent.</p>
                 </div>
             </div>
 
-            <div class="card shadow-sm">
-                <div class="card-body">
-                    <h2 class="h4 mb-3">7. Contact Us</h2>
-                    <p>If you have any questions about this Privacy Policy, please contact us at <a href="mailto:privacy@colearn.com">privacy@colearn.com</a>.</p>
+            <div id="contact" class="card border-0 shadow-sm mb-4">
+                <div class="card-body p-4">
+                    <div class="d-flex align-items-center mb-3">
+                        <span class="d-inline-block bg-primary bg-opacity-10 text-primary p-3 rounded-circle me-3">
+                            <i class="bi bi-envelope" style="font-size: 2rem;"></i>
+                        </span>
+                        <h2 class="h3 fw-bold mb-0">7. Contact Us</h2>
+                    </div>
+                    <p>If you have any questions about this Privacy Policy, please contact us at:</p>
+                    <div class="row">
+                        <div class="col-md-6 mb-3 mb-md-0">
+                            <div class="card bg-light border-0">
+                                <div class="card-body p-3">
+                                    <h5 class="mb-2"><i class="bi bi-envelope-fill me-2 text-primary"></i>Email</h5>
+                                    <p class="mb-0"><a href="mailto:privacy@colearn.com" class="text-decoration-none">privacy@colearn.com</a></p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="card bg-light border-0">
+                                <div class="card-body p-3">
+                                    <h5 class="mb-2"><i class="bi bi-geo-alt-fill me-2 text-primary"></i>Address</h5>
+                                    <p class="mb-0">CoLearn Privacy Office<br>123 Learning Street<br>Dubai, UAE</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Call to Action -->
+            <div class="card border-0 bg-primary text-white shadow rounded-3">
+                <div class="card-body p-4 text-center">
+                    <h3 class="h4 fw-bold mb-3">Have more questions about your data?</h3>
+                    <p class="mb-4">Our team is ready to address any privacy concerns you may have.</p>
+                    <a href="{% url 'website:contact' %}" class="btn btn-light btn-lg px-4 text-primary shadow-sm">
+                        <i class="bi bi-chat-dots me-2"></i>Contact Support
+                    </a>
                 </div>
             </div>
         </div>
     </div>
 </div>
-{% endblock %} 
+{% endblock %}

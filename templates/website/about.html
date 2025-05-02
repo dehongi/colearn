@@ -4,57 +4,159 @@
 
 {% block content %}
 <div class="container py-5">
-    <div class="row">
-        <div class="col-lg-8 mx-auto">
-            <h1 class="text-center mb-4">About CoLearn</h1>
-            
-            <div class="card shadow-sm mb-4">
-                <div class="card-body">
-                    <h2 class="h4 mb-3">Our Mission</h2>
-                    <p>CoLearn is dedicated to revolutionizing online education by creating a dynamic, collaborative learning environment where knowledge is continuously refined and improved through community participation.</p>
-                </div>
-            </div>
+    <div class="row mb-5">
+        <div class="col-lg-8 mx-auto text-center">
+            <h1 class="fw-bold mb-4">About <span class="text-primary">CoLearn</span></h1>
+            <p class="lead text-muted mx-auto" style="max-width: 700px;">We're building the future of collaborative online education where knowledge evolves through community participation.</p>
+        </div>
+    </div>
 
-            <div class="card shadow-sm mb-4">
-                <div class="card-body">
-                    <h2 class="h4 mb-3">What Makes Us Different</h2>
-                    <ul class="list-unstyled">
-                        <li class="mb-3">
-                            <i class="bi bi-check-circle-fill text-primary me-2"></i>
-                            <strong>Community-Driven Content:</strong> Learners can suggest improvements and additions to course materials.
-                        </li>
-                        <li class="mb-3">
-                            <i class="bi bi-check-circle-fill text-primary me-2"></i>
-                            <strong>Expert-Led Quality:</strong> All content is created and moderated by subject matter experts.
-                        </li>
-                        <li class="mb-3">
-                            <i class="bi bi-check-circle-fill text-primary me-2"></i>
-                            <strong>Continuous Improvement:</strong> Course content evolves based on learner feedback and industry changes.
-                        </li>
-                        <li class="mb-3">
-                            <i class="bi bi-check-circle-fill text-primary me-2"></i>
-                            <strong>Collaborative Learning:</strong> A platform where both instructors and learners contribute to knowledge sharing.
-                        </li>
+    <!-- Mission Section -->
+    <div class="row align-items-center mb-5">
+        <div class="col-lg-6 mb-4 mb-lg-0">
+            <img src="https://images.unsplash.com/photo-1522202176988-66273c2fd55f?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80" class="img-fluid rounded-3 shadow" alt="Collaborative Learning">
+        </div>
+        <div class="col-lg-6">
+            <div class="card border-0 shadow-sm h-100">
+                <div class="card-body p-4">
+                    <h2 class="fw-bold h3 mb-4 text-primary">Our Mission</h2>
+                    <p class="mb-3">CoLearn is dedicated to revolutionizing online education by creating a dynamic, collaborative learning environment where knowledge is continuously refined through community participation.</p>
+                    <p class="mb-3">We believe that the best educational content comes from combining expert knowledge with diverse perspectives from learners. By enabling a "pedia-like" system for course content, we create an ecosystem where:</p>
+                    <ul class="mb-0">
+                        <li class="mb-2">Experts can share their knowledge effectively</li>
+                        <li class="mb-2">Learners can suggest improvements to content</li>
+                        <li class="mb-2">Course materials evolve and improve over time</li>
+                        <li class="mb-2">Community input drives educational excellence</li>
                     </ul>
                 </div>
             </div>
+        </div>
+    </div>
 
-            <div class="card shadow-sm mb-4">
-                <div class="card-body">
-                    <h2 class="h4 mb-3">Our Team</h2>
-                    <p>CoLearn is built by a team of passionate educators, developers, and learning enthusiasts who believe in the power of collaborative knowledge sharing. Our diverse team brings together expertise from various fields to create an innovative learning platform.</p>
+    <!-- Features Section -->
+    <div class="row mb-5">
+        <div class="col-12 text-center mb-4">
+            <h2 class="fw-bold h3">What Makes Us <span class="text-primary">Different</span></h2>
+        </div>
+        <div class="col-lg-3 col-md-6 mb-4">
+            <div class="card border-0 shadow-sm h-100">
+                <div class="card-body p-4 text-center">
+                    <div class="mb-4">
+                        <span class="d-inline-block bg-primary bg-opacity-10 text-primary p-3 rounded-circle">
+                            <i class="bi bi-people-fill" style="font-size: 2rem;"></i>
+                        </span>
+                    </div>
+                    <h3 class="h5 mb-3">Community-Driven Content</h3>
+                    <p class="text-muted mb-0">Learners can suggest improvements and additions to course materials in real-time.</p>
                 </div>
             </div>
+        </div>
+        <div class="col-lg-3 col-md-6 mb-4">
+            <div class="card border-0 shadow-sm h-100">
+                <div class="card-body p-4 text-center">
+                    <div class="mb-4">
+                        <span class="d-inline-block bg-primary bg-opacity-10 text-primary p-3 rounded-circle">
+                            <i class="bi bi-mortarboard-fill" style="font-size: 2rem;"></i>
+                        </span>
+                    </div>
+                    <h3 class="h5 mb-3">Expert-Led Quality</h3>
+                    <p class="text-muted mb-0">All content is created and moderated by subject matter experts to ensure accuracy.</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-3 col-md-6 mb-4">
+            <div class="card border-0 shadow-sm h-100">
+                <div class="card-body p-4 text-center">
+                    <div class="mb-4">
+                        <span class="d-inline-block bg-primary bg-opacity-10 text-primary p-3 rounded-circle">
+                            <i class="bi bi-arrow-repeat" style="font-size: 2rem;"></i>
+                        </span>
+                    </div>
+                    <h3 class="h5 mb-3">Continuous Improvement</h3>
+                    <p class="text-muted mb-0">Course content evolves based on learner feedback and industry changes.</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-3 col-md-6 mb-4">
+            <div class="card border-0 shadow-sm h-100">
+                <div class="card-body p-4 text-center">
+                    <div class="mb-4">
+                        <span class="d-inline-block bg-primary bg-opacity-10 text-primary p-3 rounded-circle">
+                            <i class="bi bi-lightbulb-fill" style="font-size: 2rem;"></i>
+                        </span>
+                    </div>
+                    <h3 class="h5 mb-3">Collaborative Learning</h3>
+                    <p class="text-muted mb-0">A platform where both instructors and learners contribute to knowledge sharing.</p>
+                </div>
+            </div>
+        </div>
+    </div>
 
-            <div class="card shadow-sm">
-                <div class="card-body">
-                    <h2 class="h4 mb-3">Join Our Community</h2>
-                    <p>Whether you're an expert looking to share your knowledge or a learner eager to grow, CoLearn provides the perfect platform for collaborative learning and teaching.</p>
-                    <div class="text-center mt-4">
+    <!-- Team Section -->
+    <div class="row align-items-center mb-5">
+        <div class="col-lg-6 order-lg-2 mb-4 mb-lg-0">
+            <img src="https://images.unsplash.com/photo-1587614382346-4ec70e388b28?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80" class="img-fluid rounded-3 shadow" alt="Team Meeting">
+        </div>
+        <div class="col-lg-6 order-lg-1">
+            <div class="card border-0 shadow-sm h-100">
+                <div class="card-body p-4">
+                    <h2 class="fw-bold h3 mb-4 text-primary">Our Team</h2>
+                    <p class="mb-3">CoLearn is built by a passionate team of educators, developers, and learning enthusiasts who believe in the power of collaborative knowledge sharing.</p>
+                    <p class="mb-3">Our diverse team brings together expertise from various fields including:</p>
+                    <div class="row g-3 mb-3">
+                        <div class="col-sm-6">
+                            <div class="d-flex align-items-center">
+                                <i class="bi bi-code-square text-primary me-2" style="font-size: 1.5rem;"></i>
+                                <span>Software Development</span>
+                            </div>
+                        </div>
+                        <div class="col-sm-6">
+                            <div class="d-flex align-items-center">
+                                <i class="bi bi-easel text-primary me-2" style="font-size: 1.5rem;"></i>
+                                <span>Education</span>
+                            </div>
+                        </div>
+                        <div class="col-sm-6">
+                            <div class="d-flex align-items-center">
+                                <i class="bi bi-palette text-primary me-2" style="font-size: 1.5rem;"></i>
+                                <span>Design</span>
+                            </div>
+                        </div>
+                        <div class="col-sm-6">
+                            <div class="d-flex align-items-center">
+                                <i class="bi bi-graph-up text-primary me-2" style="font-size: 1.5rem;"></i>
+                                <span>Data Science</span>
+                            </div>
+                        </div>
+                    </div>
+                    <p class="mb-0">Together, we're creating an innovative learning platform that changes how online education works.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Join Section -->
+    <div class="row">
+        <div class="col-lg-10 mx-auto">
+            <div class="card border-0 bg-primary text-white shadow rounded-3">
+                <div class="card-body p-5 text-center">
+                    <h2 class="fw-bold mb-4">Join Our Community</h2>
+                    <p class="lead mb-4">Whether you're an expert looking to share your knowledge or a learner eager to grow, CoLearn provides the perfect platform for collaborative learning and teaching.</p>
+                    <div class="d-flex justify-content-center gap-3">
                         {% if not user.is_authenticated %}
-                            <a href="{% url 'accounts:register' %}" class="btn btn-primary">Get Started</a>
+                            <a href="{% url 'accounts:register' %}" class="btn btn-light btn-lg px-4 text-primary shadow-sm">
+                                <i class="bi bi-person-plus me-2"></i>Sign Up Now
+                            </a>
+                            <a href="{% url 'courses:course_list' %}" class="btn btn-outline-light btn-lg px-4">
+                                <i class="bi bi-collection me-2"></i>Explore Courses
+                            </a>
                         {% else %}
-                            <a href="{% url 'courses:course_list' %}" class="btn btn-primary">Browse Courses</a>
+                            <a href="{% url 'courses:course_list' %}" class="btn btn-light btn-lg px-4 text-primary shadow-sm">
+                                <i class="bi bi-collection me-2"></i>Browse Courses
+                            </a>
+                            <a href="{% url 'social:discussion_list' %}" class="btn btn-outline-light btn-lg px-4">
+                                <i class="bi bi-chat-dots me-2"></i>Join Discussions
+                            </a>
                         {% endif %}
                     </div>
                 </div>
@@ -62,4 +164,4 @@
         </div>
     </div>
 </div>
-{% endblock %} 
+{% endblock %}

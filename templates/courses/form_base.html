@@ -1,22 +1,61 @@
 {% extends "courses/base.html" %}
+{% load static %}
 
 {% block courses_content %}
 <div class="row justify-content-center">
     <div class="col-lg-8">
         <div class="card">
-            <div class="card-header">
+            <div class="card-header d-flex justify-content-between align-items-center">
                 <h1 class="h4 mb-0">{% block form_title %}Form{% endblock %}</h1>
+                <a href="{% block form_cancel_url %}#{% endblock %}" class="btn btn-sm btn-outline-secondary">
+                    <i class="bi bi-arrow-left"></i> Back
+                </a>
             </div>
             <div class="card-body">
-                <form method="post" enctype="multipart/form-data">
+                <form method="post" enctype="multipart/form-data" novalidate>
                     {% csrf_token %}
+                    
+                    {% if form.non_field_errors %}
+                    <div class="alert alert-danger">
+                        {% for error in form.non_field_errors %}
+                        {{ error }}
+                        {% endfor %}
+                    </div>
+                    {% endif %}
+                    
                     {% for field in form %}
-                    <div class="mb-3">
-                        {{ field.label_tag }}
-                        {{ field }}
-                        {% if field.help_text %}
-                        <div class="form-text">{{ field.help_text }}</div>
+                    <div class="mb-3 {% if field.field.widget.input_type == 'checkbox' %}form-check{% endif %}">
+                        {% if field.field.widget.input_type == 'checkbox' %}
+                            {{ field }}
+                            {{ field.label_tag }}
+                        {% else %}
+                            {{ field.label_tag }}
+                            {% if field.field.widget.input_type == 'file' and field.value %}
+                                <div class="mb-2">
+                                    <img src="{{ field.value.url }}" alt="Current {{ field.label }}" class="img-thumbnail" style="max-height: 150px;">
+                                </div>
+                            {% endif %}
+                            
+                            {% if field.field.widget.attrs.class == 'rating-input' %}
+                                <div class="rating-stars d-flex mb-2">
+                                    {% for radio in field %}
+                                    <div class="form-check form-check-inline">
+                                        {{ radio.tag }}
+                                        <label class="form-check-label" for="{{ radio.id_for_label }}">
+                                            <i class="bi bi-star-fill fs-4"></i>
+                                        </label>
+                                    </div>
+                                    {% endfor %}
+                                </div>
+                            {% else %}
+                                {{ field }}
+                            {% endif %}
                         {% endif %}
+                        
+                        {% if field.help_text %}
+                        <div class="form-text text-muted small">{{ field.help_text }}</div>
+                        {% endif %}
+                        
                         {% if field.errors %}
                         <div class="invalid-feedback d-block">
                             {% for error in field.errors %}
@@ -27,9 +66,8 @@
                     </div>
                     {% endfor %}
                     
-                    <div class="d-flex justify-content-between">
+                    <div class="d-grid gap-2 mt-4">
                         {% block form_buttons %}
-                        <a href="{% block form_cancel_url %}#{% endblock %}" class="btn btn-outline-secondary">Cancel</a>
                         <button type="submit" class="btn btn-primary">{% block form_submit_text %}Submit{% endblock %}</button>
                         {% endblock %}
                     </div>
@@ -38,4 +76,57 @@
         </div>
     </div>
 </div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Handle content type change for lesson form
+    const contentTypeField = document.getElementById('id_content_type');
+    const videoUrlField = document.getElementById('id_video_url')?.closest('.mb-3');
+    
+    if (contentTypeField && videoUrlField) {
+        function toggleVideoUrl() {
+            if (contentTypeField.value === 'video') {
+                videoUrlField.style.display = 'block';
+            } else {
+                videoUrlField.style.display = 'none';
+            }
+        }
+        
+        // Initial toggle
+        toggleVideoUrl();
+        
+        // Listen for changes
+        contentTypeField.addEventListener('change', toggleVideoUrl);
+    }
+    
+    // Handle star rating UI
+    const ratingInputs = document.querySelectorAll('.rating-input');
+    if (ratingInputs.length) {
+        ratingInputs.forEach(input => {
+            input.addEventListener('change', function() {
+                // Reset all stars
+                document.querySelectorAll('.rating-stars .form-check-label i').forEach(star => {
+                    star.className = 'bi bi-star fs-4';
+                });
+                
+                // Fill stars up to selected value
+                const selectedValue = parseInt(this.value);
+                const stars = document.querySelectorAll('.rating-stars .form-check-label i');
+                for (let i = 0; i < selectedValue; i++) {
+                    stars[i].className = 'bi bi-star-fill fs-4 text-warning';
+                }
+            });
+        });
+        
+        // Set initial state if a value is already selected
+        const checkedInput = document.querySelector('.rating-input:checked');
+        if (checkedInput) {
+            const event = new Event('change');
+            checkedInput.dispatchEvent(event);
+        }
+    }
+});
+</script>
 {% endblock %} 

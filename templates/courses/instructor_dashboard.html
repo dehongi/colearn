@@ -1,13 +1,19 @@
 {% extends "courses/base.html" %}
+{% load static %}
 
 {% block courses_title %}Instructor Dashboard{% endblock %}
 
 {% block courses_content %}
 <div class="d-flex justify-content-between align-items-center mb-4">
     <h1>Instructor Dashboard</h1>
-    <a href="{% url 'courses:create_course' %}" class="btn btn-primary">
-        <i class="bi bi-plus-lg"></i> Create Course
-    </a>
+    <div>
+        <a href="{% url 'courses:manage_categories' %}" class="btn btn-outline-primary me-2">
+            <i class="bi bi-tag"></i> Manage Categories
+        </a>
+        <a href="{% url 'courses:create_course' %}" class="btn btn-primary">
+            <i class="bi bi-plus-lg"></i> Create Course
+        </a>
+    </div>
 </div>
 
 <div class="row">
@@ -21,7 +27,7 @@
             <div class="list-group list-group-flush">
                 {% for course in courses %}
                 <div class="list-group-item">
-                    <div class="d-flex justify-content-between align-items-center">
+                    <div class="d-flex justify-content-between align-items-center mb-2">
                         <div>
                             <h3 class="h6 mb-1">
                                 <a href="{% url 'courses:course_detail' course.slug %}" class="text-decoration-none">
@@ -42,6 +48,51 @@
                             <a href="{% url 'courses:course_detail' course.slug %}" class="btn btn-sm btn-outline-primary">
                                 <i class="bi bi-eye"></i> View
                             </a>
+                        </div>
+                    </div>
+                    
+                    <!-- Course Stats -->
+                    <div class="row g-3 mt-1">
+                        <div class="col-sm-4">
+                            <div class="d-flex align-items-center">
+                                <div class="bg-light rounded-circle p-2 me-2">
+                                    <i class="bi bi-people text-primary"></i>
+                                </div>
+                                <div>
+                                    <div class="small text-muted">Enrollments</div>
+                                    <div class="fw-bold">{{ course.enrollment_count|default:"0" }}</div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-sm-4">
+                            <div class="d-flex align-items-center">
+                                <div class="bg-light rounded-circle p-2 me-2">
+                                    <i class="bi bi-star text-warning"></i>
+                                </div>
+                                <div>
+                                    <div class="small text-muted">Average Rating</div>
+                                    <div class="fw-bold">{{ course.avg_rating|floatformat:1|default:"No ratings" }}</div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-sm-4">
+                            <div class="d-flex align-items-center">
+                                <div class="bg-light rounded-circle p-2 me-2">
+                                    <i class="bi bi-chat-left-text text-info"></i>
+                                </div>
+                                <div>
+                                    <div class="small text-muted">Pending Suggestions</div>
+                                    <div class="fw-bold">
+                                        {% if course.pending_suggestions > 0 %}
+                                        <a href="{% url 'courses:manage_suggestions' %}" class="text-decoration-none">
+                                            {{ course.pending_suggestions }}
+                                        </a>
+                                        {% else %}
+                                        0
+                                        {% endif %}
+                                    </div>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -88,6 +139,9 @@
                 <a href="{% url 'courses:create_course' %}" class="list-group-item list-group-item-action">
                     <i class="bi bi-plus-lg me-2"></i> Create New Course
                 </a>
+                <a href="{% url 'courses:manage_categories' %}" class="list-group-item list-group-item-action">
+                    <i class="bi bi-tag me-2"></i> Manage Categories
+                </a>
                 <a href="{% url 'courses:manage_suggestions' %}" class="list-group-item list-group-item-action">
                     <i class="bi bi-chat-right-text me-2"></i> Manage Suggestions
                 </a>
@@ -95,4 +149,4 @@
         </div>
     </div>
 </div>
-{% endblock %} 
+{% endblock %}

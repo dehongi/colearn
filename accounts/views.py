@@ -1,14 +1,19 @@
 from django.shortcuts import render, redirect
-from django.contrib.auth import login, logout
+from django.contrib.auth import login, logout, update_session_auth_hash
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 from django.utils.translation import gettext_lazy as _
-from .forms import CustomUserCreationForm, CustomAuthenticationForm, UserProfileForm
+from .forms import (
+    CustomUserCreationForm,
+    CustomAuthenticationForm,
+    UserProfileForm,
+    CustomPasswordChangeForm,
+)
 
 
 def register_view(request):
     if request.user.is_authenticated:
-        return redirect("home")
+        return redirect("website:home")
 
     if request.method == "POST":
         form = CustomUserCreationForm(request.POST)
@@ -16,7 +21,7 @@ def register_view(request):
             user = form.save()
             login(request, user)
             messages.success(request, _("Registration successful! Welcome to CoLearn."))
-            return redirect("home")
+            return redirect("website:home")
     else:
         form = CustomUserCreationForm()
 
@@ -25,7 +30,7 @@ def register_view(request):
 
 def login_view(request):
     if request.user.is_authenticated:
-        return redirect("home")
+        return redirect("website:home")
 
     if request.method == "POST":
         form = CustomAuthenticationForm(data=request.POST)
@@ -33,7 +38,7 @@ def login_view(request):
             user = form.get_user()
             login(request, user)
             messages.success(request, _("Welcome back!"))
-            return redirect("home")
+            return redirect("website:home")
     else:
         form = CustomAuthenticationForm()
 
@@ -44,7 +49,7 @@ def login_view(request):
 def logout_view(request):
     logout(request)
     messages.info(request, _("You have been logged out."))
-    return redirect("home")
+    return redirect("website:home")
 
 
 @login_required
@@ -59,3 +64,19 @@ def profile_view(request):
         form = UserProfileForm(instance=request.user)
 
     return render(request, "accounts/profile.html", {"form": form})
+
+
+@login_required
+def change_password(request):
+    if request.method == "POST":
+        form = CustomPasswordChangeForm(user=request.user, data=request.POST)
+        if form.is_valid():
+            form.save()
+            # Keep the user logged in after password change
+            update_session_auth_hash(request, form.user)
+            messages.success(request, _("Your password was successfully updated!"))
+            return redirect("accounts:profile")
+    else:
+        form = CustomPasswordChangeForm(user=request.user)
+
+    return render(request, "accounts/change_password.html", {"form": form})

@@ -1,6 +1,6 @@
 from django import forms
 from django.utils.translation import gettext_lazy as _
-from .models import Discussion, Comment, Reaction
+from .models import Discussion, Comment, Reaction, UserActivity
 
 
 class DiscussionForm(forms.ModelForm):
@@ -114,4 +114,42 @@ class DiscussionFilterForm(forms.Form):
     is_solved = forms.BooleanField(
         required=False,
         widget=forms.CheckboxInput(attrs={"class": "form-check-input"}),
+    )
+
+
+class ActivityFilterForm(forms.Form):
+    ACTIVITY_TYPE_CHOICES = [
+        ("", _("All Activities")),
+    ] + UserActivity.ActivityType.choices
+
+    SORT_CHOICES = [
+        ("-created_at", _("Newest First")),
+        ("created_at", _("Oldest First")),
+    ]
+
+    activity_type = forms.ChoiceField(
+        choices=ACTIVITY_TYPE_CHOICES,
+        required=False,
+        label=_("Activity Type"),
+        widget=forms.Select(attrs={"class": "form-select"}),
+    )
+
+    date_from = forms.DateField(
+        required=False,
+        label=_("From Date"),
+        widget=forms.DateInput(attrs={"class": "form-control", "type": "date"}),
+    )
+
+    date_to = forms.DateField(
+        required=False,
+        label=_("To Date"),
+        widget=forms.DateInput(attrs={"class": "form-control", "type": "date"}),
+    )
+
+    sort = forms.ChoiceField(
+        choices=SORT_CHOICES,
+        required=False,
+        initial="-created_at",
+        label=_("Sort By"),
+        widget=forms.Select(attrs={"class": "form-select"}),
     )

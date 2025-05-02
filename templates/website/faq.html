@@ -4,35 +4,139 @@
 
 {% block content %}
 <div class="container py-5">
+    <div class="row mb-5">
+        <div class="col-lg-8 mx-auto text-center">
+            <h1 class="fw-bold mb-4">Frequently Asked <span class="text-primary">Questions</span></h1>
+            <p class="lead text-muted mx-auto" style="max-width: 700px;">Find answers to the most common questions about CoLearn's collaborative learning platform.</p>
+        </div>
+    </div>
+
     <div class="row">
-        <div class="col-lg-8 mx-auto">
-            <h1 class="text-center mb-4">Frequently Asked Questions</h1>
+        <div class="col-lg-10 mx-auto">
+            <!-- Search Bar -->
+            <div class="card border-0 shadow-sm mb-5">
+                <div class="card-body p-4">
+                    <div class="input-group">
+                        <span class="input-group-text bg-white border-end-0">
+                            <i class="bi bi-search text-primary"></i>
+                        </span>
+                        <input type="text" id="faqSearch" class="form-control border-start-0 py-3" placeholder="Search for answers...">
+                    </div>
+                </div>
+            </div>
+
+            <!-- Categories -->
+            <div class="text-center mb-4">
+                <div class="d-inline-flex flex-wrap justify-content-center gap-2 mb-4">
+                    <button class="btn btn-outline-primary rounded-pill px-4 mb-2 category-btn active" data-category="all">
+                        All Questions
+                    </button>
+                    <button class="btn btn-outline-primary rounded-pill px-4 mb-2 category-btn" data-category="platform">
+                        Platform
+                    </button>
+                    <button class="btn btn-outline-primary rounded-pill px-4 mb-2 category-btn" data-category="courses">
+                        Courses
+                    </button>
+                    <button class="btn btn-outline-primary rounded-pill px-4 mb-2 category-btn" data-category="contributions">
+                        Contributions
+                    </button>
+                    <button class="btn btn-outline-primary rounded-pill px-4 mb-2 category-btn" data-category="account">
+                        Account
+                    </button>
+                </div>
+            </div>
             
-            <div class="accordion" id="faqAccordion">
+            <!-- FAQ Accordion -->
+            <div class="accordion shadow-sm rounded overflow-hidden" id="faqAccordion">
                 {% for faq in faqs %}
-                    <div class="accordion-item">
+                    <div class="accordion-item border-0 border-bottom faq-item" data-category="{% if forloop.counter <= 2 %}platform{% elif forloop.counter <= 4 %}contributions{% else %}account{% endif %}">
                         <h2 class="accordion-header">
-                            <button class="accordion-button {% if not forloop.first %}collapsed{% endif %}" type="button" data-bs-toggle="collapse" data-bs-target="#faq{{ forloop.counter }}">
+                            <button class="accordion-button {% if not forloop.first %}collapsed{% endif %} py-4" type="button" data-bs-toggle="collapse" data-bs-target="#faq{{ forloop.counter }}">
                                 {{ faq.question }}
                             </button>
                         </h2>
                         <div id="faq{{ forloop.counter }}" class="accordion-collapse collapse {% if forloop.first %}show{% endif %}" data-bs-parent="#faqAccordion">
-                            <div class="accordion-body">
-                                {{ faq.answer }}
+                            <div class="accordion-body bg-light">
+                                <p class="mb-0">{{ faq.answer }}</p>
                             </div>
                         </div>
                     </div>
                 {% endfor %}
             </div>
 
-            <div class="card shadow-sm mt-4">
-                <div class="card-body text-center">
-                    <h2 class="h4 mb-3">Still Have Questions?</h2>
-                    <p class="text-muted mb-4">Can't find the answer you're looking for? Please chat with our friendly team.</p>
-                    <a href="{% url 'website:contact' %}" class="btn btn-primary">Contact Us</a>
+            <!-- Contact Card -->
+            <div class="card border-0 bg-primary text-white shadow rounded-3 mt-5">
+                <div class="card-body p-5 text-center">
+                    <div class="mb-4">
+                        <span class="d-inline-block bg-white text-primary p-3 rounded-circle">
+                            <i class="bi bi-question-circle" style="font-size: 2rem;"></i>
+                        </span>
+                    </div>
+                    <h2 class="h3 fw-bold mb-3">Still Have Questions?</h2>
+                    <p class="lead mb-4">Can't find the answer you're looking for? Our friendly support team is here to help.</p>
+                    <a href="{% url 'website:contact' %}" class="btn btn-light btn-lg px-4 text-primary shadow-sm">
+                        <i class="bi bi-envelope me-2"></i>Contact Support
+                    </a>
                 </div>
             </div>
         </div>
     </div>
 </div>
+
+{% block extra_js %}
+<script>
+    // FAQ Search Functionality
+    document.addEventListener('DOMContentLoaded', function() {
+        const searchInput = document.getElementById('faqSearch');
+        const faqItems = document.querySelectorAll('.faq-item');
+        const categoryButtons = document.querySelectorAll('.category-btn');
+        let activeCategory = 'all';
+
+        // Search function
+        searchInput.addEventListener('input', function() {
+            const searchTerm = this.value.toLowerCase();
+            
+            faqItems.forEach(item => {
+                const questionText = item.querySelector('.accordion-button').textContent.toLowerCase();
+                const answerText = item.querySelector('.accordion-body').textContent.toLowerCase();
+                const itemCategory = item.dataset.category;
+                
+                // Check if the item matches both the search term and active category
+                const matchesSearch = searchTerm === '' || 
+                    questionText.includes(searchTerm) || 
+                    answerText.includes(searchTerm);
+                
+                const matchesCategory = activeCategory === 'all' || itemCategory === activeCategory;
+                
+                if (matchesSearch && matchesCategory) {
+                    item.style.display = '';
+                } else {
+                    item.style.display = 'none';
+                }
+            });
+        });
+
+        // Category filter
+        categoryButtons.forEach(button => {
+            button.addEventListener('click', function() {
+                // Update active button
+                categoryButtons.forEach(btn => btn.classList.remove('active'));
+                this.classList.add('active');
+                
+                // Set active category
+                activeCategory = this.dataset.category;
+                
+                // Filter items
+                faqItems.forEach(item => {
+                    if (activeCategory === 'all' || item.dataset.category === activeCategory) {
+                        item.style.display = '';
+                    } else {
+                        item.style.display = 'none';
+                    }
+                });
+            });
+        });
+    });
+</script>
+{% endblock %}
 {% endblock %} 

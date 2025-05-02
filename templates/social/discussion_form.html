@@ -1,1 +1,121 @@
- 
+{% extends "social/base.html" %}
+{% load i18n %}
+
+{% block social_content %}
+<div class="row mb-4">
+    <div class="col-12">
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="{% url 'social:discussion_list' %}">{% trans "Discussions" %}</a></li>
+                <li class="breadcrumb-item active">
+                    {% if discussion %}{% trans "Edit Discussion" %}{% else %}{% trans "New Discussion" %}{% endif %}
+                </li>
+            </ol>
+        </nav>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-lg-8 mx-auto">
+        <div class="card">
+            <div class="card-header">
+                <h1 class="h3 mb-0">
+                    {% if discussion %}
+                        {% trans "Edit Discussion" %}
+                    {% else %}
+                        {% trans "Create New Discussion" %}
+                    {% endif %}
+                </h1>
+            </div>
+            <div class="card-body">
+                <form method="post">
+                    {% csrf_token %}
+                    
+                    <div class="mb-3">
+                        <label for="{{ form.title.id_for_label }}" class="form-label">{{ form.title.label }}</label>
+                        {{ form.title }}
+                        {% if form.title.errors %}
+                            <div class="text-danger">
+                                {% for error in form.title.errors %}
+                                    {{ error }}
+                                {% endfor %}
+                            </div>
+                        {% endif %}
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label for="{{ form.content.id_for_label }}" class="form-label">{{ form.content.label }}</label>
+                        {{ form.content }}
+                        {% if form.content.errors %}
+                            <div class="text-danger">
+                                {% for error in form.content.errors %}
+                                    {{ error }}
+                                {% endfor %}
+                            </div>
+                        {% endif %}
+                        <div class="form-text">{% trans "You can use markdown for formatting." %}</div>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label for="{{ form.status.id_for_label }}" class="form-label">{{ form.status.label }}</label>
+                        {{ form.status }}
+                        {% if form.status.errors %}
+                            <div class="text-danger">
+                                {% for error in form.status.errors %}
+                                    {{ error }}
+                                {% endfor %}
+                            </div>
+                        {% endif %}
+                    </div>
+                    
+                    <div class="row mb-3">
+                        <div class="col-md-6">
+                            <div class="form-check">
+                                {{ form.is_pinned }}
+                                <label class="form-check-label" for="{{ form.is_pinned.id_for_label }}">
+                                    {% trans "Pin this discussion" %}
+                                </label>
+                                {% if form.is_pinned.errors %}
+                                    <div class="text-danger">
+                                        {% for error in form.is_pinned.errors %}
+                                            {{ error }}
+                                        {% endfor %}
+                                    </div>
+                                {% endif %}
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-check">
+                                {{ form.is_announcement }}
+                                <label class="form-check-label" for="{{ form.is_announcement.id_for_label }}">
+                                    {% trans "Mark as announcement" %}
+                                </label>
+                                {% if form.is_announcement.errors %}
+                                    <div class="text-danger">
+                                        {% for error in form.is_announcement.errors %}
+                                            {{ error }}
+                                        {% endfor %}
+                                    </div>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+                        <a href="{% url 'social:discussion_list' %}" class="btn btn-outline-secondary me-md-2">
+                            {% trans "Cancel" %}
+                        </a>
+                        <button type="submit" class="btn btn-primary">
+                            {% if discussion %}
+                                {% trans "Update Discussion" %}
+                            {% else %}
+                                {% trans "Create Discussion" %}
+                            {% endif %}
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

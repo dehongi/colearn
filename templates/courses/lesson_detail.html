@@ -1,8 +1,20 @@
 {% extends "courses/base.html" %}
+{% load static %}
 
 {% block courses_title %}{{ lesson.title }} - {{ course.title }}{% endblock %}
 
 {% block courses_content %}
+<!-- Progress Bar -->
+<div class="progress mb-3" style="height: 8px;">
+    <div class="progress-bar {% if progress_percentage == 100 %}bg-success{% endif %}" 
+         role="progressbar" 
+         style="width: {{ progress_percentage }}%;" 
+         aria-valuenow="{{ progress_percentage }}" 
+         aria-valuemin="0" 
+         aria-valuemax="100">
+    </div>
+</div>
+
 <nav aria-label="breadcrumb" class="mb-4">
     <ol class="breadcrumb">
         <li class="breadcrumb-item"><a href="{% url 'courses:course_detail' course.slug %}">{{ course.title }}</a></li>
@@ -16,21 +28,89 @@
         <!-- Lesson Content -->
         <div class="card mb-4">
             <div class="card-body">
-                <h1 class="card-title h2 mb-4">{{ lesson.title }}</h1>
-                <div class="lesson-content">
-                    {{ lesson.content|linebreaks }}
+                <div class="d-flex justify-content-between align-items-start mb-3">
+                    <h1 class="card-title h2">{{ lesson.title }}</h1>
+                    
+                    <!-- Completion Status -->
+                    <span class="badge {% if progress.is_completed %}bg-success{% else %}bg-secondary{% endif %}">
+                        {% if progress.is_completed %}
+                        <i class="bi bi-check-circle-fill me-1"></i> Completed
+                        {% else %}
+                        <i class="bi bi-circle me-1"></i> Not Completed
+                        {% endif %}
+                    </span>
+                </div>
+                
+                <div class="lesson-content mb-4">
+                    {% if lesson.content_type == 'video' %}
+                        <div class="embed-responsive ratio ratio-16x9 mb-4">
+                            {% if 'youtube.com' in lesson.video_url or 'youtu.be' in lesson.video_url %}
+                                <iframe 
+                                    src="{{ lesson.video_url|default:'' }}" 
+                                    title="{{ lesson.title }}" 
+                                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
+                                    allowfullscreen>
+                                </iframe>
+                            {% else %}
+                                <video controls>
+                                    <source src="{{ lesson.video_url|default:'' }}" type="video/mp4">
+                                    Your browser does not support the video tag.
+                                </video>
+                            {% endif %}
+                        </div>
+                    {% elif lesson.content_type == 'quiz' %}
+                        <div class="quiz-container">
+                            <p class="text-muted mb-3"><i class="bi bi-info-circle me-2"></i> Complete the quiz by answering all questions.</p>
+                            {{ lesson.content|linebreaks }}
+                        </div>
+                    {% else %}
+                        {{ lesson.content|linebreaks }}
+                    {% endif %}
+                </div>
+                
+                <!-- Mark as Complete Button -->
+                {% if not progress.is_completed %}
+                <form method="post" class="mb-3">
+                    {% csrf_token %}
+                    <input type="hidden" name="mark_completed" value="1">
+                    <button type="submit" class="btn btn-success">
+                        <i class="bi bi-check-lg me-1"></i> Mark as Completed
+                    </button>
+                </form>
+                {% endif %}
+                
+                <!-- Lesson Navigation -->
+                <div class="d-flex justify-content-between mt-4">
+                    {% if prev_lesson %}
+                    <a href="{% url 'courses:lesson_detail' course.slug prev_lesson.id %}" class="btn btn-outline-primary">
+                        <i class="bi bi-arrow-left me-1"></i> Previous Lesson
+                    </a>
+                    {% else %}
+                    <div></div>
+                    {% endif %}
+                    
+                    {% if next_lesson %}
+                    <a href="{% url 'courses:lesson_detail' course.slug next_lesson.id %}" class="btn btn-primary">
+                        Next Lesson <i class="bi bi-arrow-right ms-1"></i>
+                    </a>
+                    {% else %}
+                    <a href="{% url 'courses:course_detail' course.slug %}" class="btn btn-success">
+                        <i class="bi bi-check-circle me-1"></i> Complete Course
+                    </a>
+                    {% endif %}
                 </div>
             </div>
         </div>
 
         <!-- Suggestion Form -->
-        <div class="card">
+        <div class="card mb-4">
             <div class="card-header">
                 <h2 class="h5 mb-0">Suggest an Improvement</h2>
             </div>
             <div class="card-body">
                 <form method="post">
                     {% csrf_token %}
+                    <input type="hidden" name="suggestion" value="1">
                     {% for field in form %}
                     <div class="mb-3">
                         {{ field.label_tag }}
@@ -51,9 +131,73 @@
                 </form>
             </div>
         </div>
+        
+        <!-- Previous Suggestions -->
+        {% if previous_suggestions %}
+        <div class="card">
+            <div class="card-header">
+                <h2 class="h5 mb-0">Previous Suggestions</h2>
+            </div>
+            <div class="list-group list-group-flush">
+                {% for suggestion in previous_suggestions %}
+                <div class="list-group-item">
+                    <div class="d-flex justify-content-between align-items-start mb-2">
+                        <div>
+                            <p class="text-muted small mb-0">
+                                From {{ suggestion.user.get_full_name|default:suggestion.user.username }} • 
+                                {{ suggestion.created_at|date:"F j, Y" }}
+                            </p>
+                        </div>
+                        <span class="badge {% if suggestion.status == 'APPROVED' %}bg-success{% elif suggestion.status == 'REJECTED' %}bg-danger{% else %}bg-warning{% endif %}">
+                            {{ suggestion.get_status_display }}
+                        </span>
+                    </div>
+                    <div class="card mb-2">
+                        <div class="card-body py-2 px-3 bg-light">
+                            <p class="mb-0">{{ suggestion.content }}</p>
+                        </div>
+                    </div>
+                    {% if suggestion.instructor_response %}
+                    <div class="card border-primary">
+                        <div class="card-header py-1 px-3 bg-primary bg-opacity-10">
+                            <strong><i class="bi bi-reply"></i> Instructor Response</strong>
+                        </div>
+                        <div class="card-body py-2 px-3">
+                            <p class="mb-0">{{ suggestion.instructor_response }}</p>
+                        </div>
+                    </div>
+                    {% endif %}
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+        {% endif %}
     </div>
 
     <div class="col-lg-4">
+        <!-- Course Progress -->
+        <div class="card mb-4">
+            <div class="card-header">
+                <h3 class="h5 mb-0">Your Progress</h3>
+            </div>
+            <div class="card-body">
+                <div class="text-center mb-3">
+                    <div class="progress-circle mx-auto position-relative" style="width: 120px; height: 120px;">
+                        <svg width="120" height="120" viewBox="0 0 120 120">
+                            <circle cx="60" cy="60" r="54" fill="none" stroke="#e9ecef" stroke-width="12" />
+                            <circle cx="60" cy="60" r="54" fill="none" stroke="#4361ee" stroke-width="12"
+                                stroke-dasharray="339.3" stroke-dashoffset="{{ 339.3|add:(-339.3|mul:progress_percentage|div:100) }}" class="progress-circle-progress" />
+                        </svg>
+                        <div class="position-absolute top-50 start-50 translate-middle">
+                            <span class="h3 mb-0 fw-bold">{{ progress_percentage }}%</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <p class="text-center mb-0">Keep going! You're making great progress.</p>
+            </div>
+        </div>
+        
         <!-- Module Navigation -->
         <div class="card">
             <div class="card-header">
@@ -62,12 +206,32 @@
             <div class="list-group list-group-flush">
                 {% for module_lesson in lesson.module.lessons.all %}
                 <a href="{% url 'courses:lesson_detail' course.slug module_lesson.id %}" 
-                   class="list-group-item list-group-item-action {% if module_lesson == lesson %}active{% endif %}">
-                    {{ module_lesson.title }}
+                   class="list-group-item list-group-item-action d-flex justify-content-between align-items-center {% if module_lesson == lesson %}active{% endif %}">
+                    <div class="d-flex align-items-center">
+                        <!-- Lesson type icon -->
+                        {% if module_lesson.content_type == 'video' %}
+                        <i class="bi bi-play-circle me-2 {% if module_lesson == lesson %}text-white{% else %}text-danger{% endif %}"></i>
+                        {% elif module_lesson.content_type == 'quiz' %}
+                        <i class="bi bi-question-circle me-2 {% if module_lesson == lesson %}text-white{% else %}text-primary{% endif %}"></i>
+                        {% else %}
+                        <i class="bi bi-file-text me-2 {% if module_lesson == lesson %}text-white{% else %}text-secondary{% endif %}"></i>
+                        {% endif %}
+                        {{ module_lesson.title }}
+                    </div>
                 </a>
                 {% endfor %}
             </div>
         </div>
     </div>
 </div>
+{% endblock %}
+
+{% block extra_css %}
+<style>
+    .progress-circle-progress {
+        transform: rotate(-90deg);
+        transform-origin: 50% 50%;
+        transition: stroke-dashoffset 0.5s ease;
+    }
+</style>
 {% endblock %} 

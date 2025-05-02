@@ -10,42 +10,196 @@
     </a>
 </div>
 
-{% if suggestions %}
-<div class="card">
-    <div class="list-group list-group-flush">
-        {% for suggestion in suggestions %}
-        <div class="list-group-item">
-            <div class="d-flex justify-content-between align-items-start mb-2">
-                <div>
-                    <h2 class="h6 mb-1">{{ suggestion.lesson.title }}</h2>
-                    <p class="text-muted small mb-0">
-                        From {{ suggestion.user.get_full_name|default:suggestion.user.username }} • 
-                        {{ suggestion.created_at|date:"F j, Y" }}
-                    </p>
-                </div>
-                <span class="badge {% if suggestion.status == 'APPROVED' %}bg-success{% elif suggestion.status == 'REJECTED' %}bg-danger{% else %}bg-warning{% endif %}">
-                    {{ suggestion.get_status_display }}
-                </span>
+<!-- Filters -->
+<div class="card mb-4">
+    <div class="card-header">
+        <h2 class="h5 mb-0">Filters</h2>
+    </div>
+    <div class="card-body">
+        <form method="get" class="row g-3">
+            <div class="col-md-3">
+                <label for="course-filter" class="form-label">Course</label>
+                <select name="course" id="course-filter" class="form-select course-filter">
+                    <option value="">All Courses</option>
+                    {% for course in instructor_courses %}
+                    <option value="{{ course.slug }}" {% if current_course == course.slug %}selected{% endif %}>
+                        {{ course.title }}
+                    </option>
+                    {% endfor %}
+                </select>
             </div>
-            <p class="mb-3">{{ suggestion.content }}</p>
-            {% if suggestion.status == 'PENDING' %}
-            <form method="post" class="d-flex gap-2">
-                {% csrf_token %}
-                <input type="hidden" name="suggestion_id" value="{{ suggestion.id }}">
-                {{ form.status }}
-                <button type="submit" class="btn btn-primary btn-sm">Update Status</button>
-            </form>
-            {% endif %}
-        </div>
-        {% endfor %}
+            <div class="col-md-3">
+                <label for="module-filter" class="form-label">Module</label>
+                <select name="module" id="module-filter" class="form-select">
+                    <option value="">All Modules</option>
+                    {% if current_course %}
+                        {% for course in instructor_courses %}
+                            {% if course.slug == current_course %}
+                                {% for module in course.modules.all %}
+                                <option value="{{ module.id }}" {% if current_module == module.id|stringformat:"i" %}selected{% endif %}>
+                                    {{ module.title }}
+                                </option>
+                                {% endfor %}
+                            {% endif %}
+                        {% endfor %}
+                    {% endif %}
+                </select>
+            </div>
+            <div class="col-md-3">
+                <label for="status-filter" class="form-label">Status</label>
+                <select name="status" id="status-filter" class="form-select">
+                    <option value="">All Statuses</option>
+                    {% for status_value, status_label in suggestion_statuses %}
+                    <option value="{{ status_value }}" {% if current_status == status_value %}selected{% endif %}>
+                        {{ status_label }}
+                    </option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="col-md-3 d-flex align-items-end">
+                <button type="submit" class="btn btn-primary w-100">Filter</button>
+            </div>
+        </form>
     </div>
 </div>
+
+{% if courses_with_suggestions %}
+    {% for course, suggestions in courses_with_suggestions.items %}
+    <div class="card mb-4">
+        <div class="card-header bg-light">
+            <h2 class="h5 mb-0">{{ course.title }}</h2>
+        </div>
+        <div class="list-group list-group-flush">
+            {% for suggestion in suggestions %}
+            <div class="list-group-item">
+                <div class="d-flex justify-content-between align-items-start mb-2">
+                    <div>
+                        <h3 class="h6 mb-1">
+                            <a href="{% url 'courses:lesson_detail' course_slug=course.slug lesson_id=suggestion.lesson.id %}">
+                                {{ suggestion.lesson.title }}
+                            </a>
+                        </h3>
+                        <p class="text-muted small mb-0">
+                            From {{ suggestion.user.get_full_name|default:suggestion.user.username }} • 
+                            {{ suggestion.created_at|date:"F j, Y" }}
+                        </p>
+                    </div>
+                    <span class="badge {% if suggestion.status == 'APPROVED' %}bg-success{% elif suggestion.status == 'REJECTED' %}bg-danger{% else %}bg-warning{% endif %}">
+                        {{ suggestion.get_status_display }}
+                    </span>
+                </div>
+                
+                <div class="card mb-3">
+                    <div class="card-body py-2 px-3 bg-light">
+                        <p class="mb-0">{{ suggestion.content }}</p>
+                    </div>
+                </div>
+                
+                {% if suggestion.instructor_response %}
+                <div class="card mb-3 border-primary">
+                    <div class="card-header py-1 px-3 bg-primary bg-opacity-10">
+                        <strong><i class="bi bi-reply"></i> Your Response</strong>
+                    </div>
+                    <div class="card-body py-2 px-3">
+                        <p class="mb-0">{{ suggestion.instructor_response }}</p>
+                    </div>
+                </div>
+                {% endif %}
+                
+                <form method="post" class="mt-3">
+                    {% csrf_token %}
+                    <input type="hidden" name="suggestion_id" value="{{ suggestion.id }}">
+                    
+                    <div class="row g-2">
+                        <div class="col-md-8">
+                            <label for="id_instructor_response_{{ suggestion.id }}" class="form-label">Response</label>
+                            <textarea 
+                                name="instructor_response" 
+                                id="id_instructor_response_{{ suggestion.id }}" 
+                                class="form-control"
+                                rows="3"
+                                placeholder="Provide feedback to the suggestion (optional)"
+                            >{{ suggestion.instructor_response }}</textarea>
+                        </div>
+                        <div class="col-md-4">
+                            <label for="id_status_{{ suggestion.id }}" class="form-label">Status</label>
+                            <select name="status" id="id_status_{{ suggestion.id }}" class="form-select mb-2">
+                                {% for status_value, status_label in suggestion_statuses %}
+                                <option value="{{ status_value }}" {% if suggestion.status == status_value %}selected{% endif %}>
+                                    {{ status_label }}
+                                </option>
+                                {% endfor %}
+                            </select>
+                            <button type="submit" class="btn btn-primary w-100">Update</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+    {% endfor %}
 {% else %}
 <div class="card">
     <div class="card-body text-center py-5">
-        <h2 class="h4 mb-3">No Suggestions Yet</h2>
-        <p class="text-muted mb-0">When learners suggest improvements to your courses, they will appear here.</p>
+        <h2 class="h4 mb-3">No Suggestions Found</h2>
+        <p class="text-muted mb-0">
+            {% if current_course or current_status %}
+                No suggestions match your current filters. Try changing your filter criteria.
+            {% else %}
+                When learners suggest improvements to your courses, they will appear here.
+            {% endif %}
+        </p>
     </div>
 </div>
 {% endif %}
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const courseFilter = document.getElementById('course-filter');
+        const moduleFilter = document.getElementById('module-filter');
+        
+        // Store all modules by course for dynamic filtering
+        const modulesByCourse = {
+            {% for course in instructor_courses %}
+            "{{ course.slug }}": [
+                {% for module in course.modules.all %}
+                {id: "{{ module.id }}", title: "{{ module.title }}"},
+                {% endfor %}
+            ],
+            {% endfor %}
+        };
+        
+        // Update modules when course changes
+        courseFilter.addEventListener('change', function() {
+            const selectedCourse = this.value;
+            
+            // Clear module dropdown
+            moduleFilter.innerHTML = '<option value="">All Modules</option>';
+            
+            if (selectedCourse && modulesByCourse[selectedCourse]) {
+                // Add modules for the selected course
+                modulesByCourse[selectedCourse].forEach(function(module) {
+                    const option = document.createElement('option');
+                    option.value = module.id;
+                    option.textContent = module.title;
+                    moduleFilter.appendChild(option);
+                });
+                
+                // Enable module filter
+                moduleFilter.disabled = false;
+            } else {
+                // Disable module filter if no course is selected
+                moduleFilter.disabled = true;
+            }
+        });
+        
+        // Initial setup
+        if (!courseFilter.value) {
+            moduleFilter.disabled = true;
+        }
+    });
+</script>
 {% endblock %} 

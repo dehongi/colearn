@@ -1,0 +1,48 @@
+{% extends "courses/base.html" %}
+
+{% block courses_title %}{% if category %}Edit Category{% else %}Create Category{% endif %}{% endblock %}
+
+{% block courses_content %}
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h1>{% if category %}Edit Category: {{ category.name }}{% else %}Create New Category{% endif %}</h1>
+    <a href="{% url 'courses:manage_categories' %}" class="btn btn-outline-secondary">
+        <i class="bi bi-arrow-left"></i> Back to Categories
+    </a>
+</div>
+
+<div class="row justify-content-center">
+    <div class="col-lg-8">
+        <div class="card">
+            <div class="card-header">
+                <h2 class="h5 mb-0">{% if category %}Edit Category{% else %}Create Category{% endif %}</h2>
+            </div>
+            <div class="card-body">
+                <form method="post">
+                    {% csrf_token %}
+                    {% for field in form %}
+                    <div class="mb-3">
+                        {{ field.label_tag }}
+                        {{ field }}
+                        {% if field.help_text %}
+                        <div class="form-text">{{ field.help_text }}</div>
+                        {% endif %}
+                        {% if field.errors %}
+                        <div class="invalid-feedback d-block">
+                            {% for error in field.errors %}
+                            {{ error }}
+                            {% endfor %}
+                        </div>
+                        {% endif %}
+                    </div>
+                    {% endfor %}
+                    <div class="d-grid gap-2">
+                        <button type="submit" class="btn btn-primary">
+                            {% if category %}Update Category{% else %}Create Category{% endif %}
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

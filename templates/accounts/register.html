@@ -3,33 +3,136 @@
 {% block title %}Register - CoLearn{% endblock %}
 
 {% block content %}
-<div class="row justify-content-center">
-    <div class="col-md-8 col-lg-6">
-        <div class="card shadow">
-            <div class="card-body">
-                <h2 class="card-title text-center mb-4">Create an Account</h2>
-                <form method="post" novalidate>
-                    {% csrf_token %}
-                    {% for field in form %}
-                        <div class="mb-3">
-                            {{ field.label_tag }}
-                            {{ field }}
-                            {% if field.help_text %}
-                                <div class="form-text">{{ field.help_text }}</div>
-                            {% endif %}
-                            {% if field.errors %}
-                                <div class="invalid-feedback d-block">
-                                    {{ field.errors|join:", " }}
+<div class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-lg-6 col-md-8">
+            <div class="text-center mb-4">
+                <h1 class="fw-bold">Create <span class="text-primary">Account</span></h1>
+                <p class="text-muted">Join our collaborative learning community and start your educational journey.</p>
+            </div>
+            
+            <div class="card border-0 shadow-sm">
+                <div class="card-body p-4 p-lg-5">
+                    <form method="post" novalidate>
+                        {% csrf_token %}
+                        
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="form-floating mb-3">
+                                    {{ form.first_name }}
+                                    <label for="{{ form.first_name.id_for_label }}">{{ form.first_name.label }}</label>
+                                    {% if form.first_name.errors %}
+                                        <div class="invalid-feedback d-block mt-1">
+                                            {{ form.first_name.errors|join:", " }}
+                                        </div>
+                                    {% endif %}
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-floating mb-3">
+                                    {{ form.last_name }}
+                                    <label for="{{ form.last_name.id_for_label }}">{{ form.last_name.label }}</label>
+                                    {% if form.last_name.errors %}
+                                        <div class="invalid-feedback d-block mt-1">
+                                            {{ form.last_name.errors|join:", " }}
+                                        </div>
+                                    {% endif %}
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="form-floating mb-3">
+                                    {{ form.username }}
+                                    <label for="{{ form.username.id_for_label }}">{{ form.username.label }}</label>
+                                    {% if form.username.errors %}
+                                        <div class="invalid-feedback d-block mt-1">
+                                            {{ form.username.errors|join:", " }}
+                                        </div>
+                                    {% endif %}
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-floating mb-3">
+                                    {{ form.email }}
+                                    <label for="{{ form.email.id_for_label }}">{{ form.email.label }}</label>
+                                    {% if form.email.errors %}
+                                        <div class="invalid-feedback d-block mt-1">
+                                            {{ form.email.errors|join:", " }}
+                                        </div>
+                                    {% endif %}
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="form-floating mb-3">
+                            {{ form.role }}
+                            <label for="{{ form.role.id_for_label }}">{{ form.role.label }}</label>
+                            {% if form.role.errors %}
+                                <div class="invalid-feedback d-block mt-1">
+                                    {{ form.role.errors|join:", " }}
                                 </div>
                             {% endif %}
                         </div>
-                    {% endfor %}
-                    <div class="d-grid gap-2">
-                        <button type="submit" class="btn btn-primary">Register</button>
+                        
+                        <div class="form-floating mb-3">
+                            {{ form.password1 }}
+                            <label for="{{ form.password1.id_for_label }}">{{ form.password1.label }}</label>
+                            {% if form.password1.errors %}
+                                <div class="invalid-feedback d-block mt-1">
+                                    {{ form.password1.errors|join:", " }}
+                                </div>
+                            {% endif %}
+                            <div class="form-text small mt-1">
+                                Your password must be at least 8 characters and can't be entirely numeric.
+                            </div>
+                        </div>
+                        
+                        <div class="form-floating mb-4">
+                            {{ form.password2 }}
+                            <label for="{{ form.password2.id_for_label }}">{{ form.password2.label }}</label>
+                            {% if form.password2.errors %}
+                                <div class="invalid-feedback d-block mt-1">
+                                    {{ form.password2.errors|join:", " }}
+                                </div>
+                            {% endif %}
+                        </div>
+                        
+                        <div class="form-check mb-4">
+                            <input class="form-check-input" type="checkbox" id="agree-terms" required>
+                            <label class="form-check-label" for="agree-terms">
+                                I agree to the <a href="{% url 'website:terms' %}" target="_blank">Terms of Service</a> and <a href="{% url 'website:privacy' %}" target="_blank">Privacy Policy</a>
+                            </label>
+                        </div>
+                        
+                        <div class="d-grid gap-2">
+                            <button type="submit" class="btn btn-primary py-3 fw-semibold">
+                                <i class="bi bi-person-plus me-2"></i>Create Account
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+            
+            <div class="text-center mt-4">
+                <p class="mb-0">Already have an account? 
+                    <a href="{% url 'accounts:login' %}" class="text-primary fw-semibold">Log in</a>
+                </p>
+            </div>
+            
+            <div class="card bg-light border-0 mt-4">
+                <div class="card-body p-3">
+                    <div class="d-flex align-items-center">
+                        <div class="flex-shrink-0 me-3">
+                            <span class="bg-primary bg-opacity-10 text-primary p-2 rounded-circle d-inline-block">
+                                <i class="bi bi-shield-check"></i>
+                            </span>
+                        </div>
+                        <div>
+                            <p class="small text-muted mb-0">Your data is protected and we will never share your information with third parties. See our <a href="{% url 'website:privacy' %}">Privacy Policy</a>.</p>
+                        </div>
                     </div>
-                </form>
-                <div class="text-center mt-3">
-                    <p class="mb-0">Already have an account? <a href="{% url 'accounts:login' %}">Login here</a></p>
                 </div>
             </div>
         </div>

@@ -23,11 +23,29 @@
                 {% endif %}
                 {{ discussion.title }}
             </h1>
-            {% if user == discussion.author %}
-            <a href="{% url 'social:edit_discussion' discussion.slug %}" class="btn btn-outline-primary btn-sm">
-                <i class="bi bi-pencil"></i> {% trans "Edit" %}
-            </a>
-            {% endif %}
+            <div>
+                {% if user == discussion.author %}
+                <a href="{% url 'social:edit_discussion' discussion.slug %}" class="btn btn-outline-primary btn-sm me-2">
+                    <i class="bi bi-pencil"></i> {% trans "Edit" %}
+                </a>
+                
+                {% if discussion.status == 'OPEN' %}
+                <form method="post" action="{% url 'social:close_discussion' discussion.slug %}" class="d-inline">
+                    {% csrf_token %}
+                    <button type="submit" class="btn btn-outline-secondary btn-sm">
+                        <i class="bi bi-lock"></i> {% trans "Close" %}
+                    </button>
+                </form>
+                {% elif discussion.status == 'CLOSED' %}
+                <form method="post" action="{% url 'social:reopen_discussion' discussion.slug %}" class="d-inline">
+                    {% csrf_token %}
+                    <button type="submit" class="btn btn-outline-success btn-sm">
+                        <i class="bi bi-unlock"></i> {% trans "Reopen" %}
+                    </button>
+                </form>
+                {% endif %}
+                {% endif %}
+            </div>
         </div>
 
         <div class="d-flex justify-content-between align-items-center mb-3">
@@ -46,21 +64,24 @@
             {{ discussion.content|linebreaks }}
         </div>
 
-        <div class="text-muted">
+        <div class="d-flex justify-content-between align-items-center text-muted">
             <small>
                 {% trans "Created" %} {{ discussion.created_at|timesince }} {% trans "ago" %}
                 {% if discussion.updated_at != discussion.created_at %}
                 ({% trans "Updated" %} {{ discussion.updated_at|timesince }} {% trans "ago" %})
                 {% endif %}
             </small>
+            <small>
+                <i class="bi bi-eye"></i> {{ discussion.views_count }} {% trans "views" %}
+            </small>
         </div>
     </div>
 </div>
 
 <div class="comments-section">
-    <h3 class="h4 mb-4">{% trans "Comments" %}</h3>
+    <h3 class="h4 mb-4">{% trans "Comments" %} ({{ comments|length }})</h3>
 
-    {% if user.is_authenticated %}
+    {% if user.is_authenticated and discussion.status == 'OPEN' %}
     <div class="card mb-4">
         <div class="card-body">
             <form method="post" action="{% url 'social:add_comment' discussion.slug %}">
@@ -71,6 +92,10 @@
                 </button>
             </form>
         </div>
+    </div>
+    {% elif discussion.status != 'OPEN' %}
+    <div class="alert alert-info mb-4">
+        {% trans "This discussion is closed. New comments cannot be added." %}
     </div>
     {% endif %}
 
@@ -99,25 +124,37 @@
 
                 <div class="d-flex justify-content-between align-items-center">
                     <div class="reactions">
-                        {% for reaction in comment.reactions.all %}
-                        <span class="badge bg-light text-dark me-1">
-                            {{ reaction.get_type_display }}
+                        {% for reaction_type, count in comment.reactions.values_list('type').annotate(count=Count('type')) %}
+                        <span class="badge bg-light text-dark me-1" 
+                              data-bs-toggle="tooltip" 
+                              title="{{ count }} {{ reaction_type|title }}">
+                            {% if reaction_type == 'LIKE' %}<i class="bi bi-heart-fill text-danger"></i>{% endif %}
+                            {% if reaction_type == 'HELPFUL' %}<i class="bi bi-hand-thumbs-up-fill text-primary"></i>{% endif %}
+                            {% if reaction_type == 'CONFUSED' %}<i class="bi bi-question-circle-fill text-warning"></i>{% endif %}
+                            {% if reaction_type == 'THANKS' %}<i class="bi bi-emoji-smile-fill text-success"></i>{% endif %}
+                            {% if reaction_type == 'INSIGHTFUL' %}<i class="bi bi-lightbulb-fill text-info"></i>{% endif %}
+                            {{ count }}
                         </span>
                         {% endfor %}
                     </div>
 
                     <div class="actions">
-                        {% if user.is_authenticated %}
+                        {% if user.is_authenticated and discussion.status == 'OPEN' %}
                         <button class="btn btn-sm btn-outline-primary me-2" data-bs-toggle="collapse" 
                                 data-bs-target="#replyForm{{ comment.id }}">
                             <i class="bi bi-reply"></i> {% trans "Reply" %}
                         </button>
-                        <form method="post" action="{% url 'social:add_reaction' comment.id %}" class="d-inline">
+                        <form method="post" action="{% url 'social:add_reaction' comment.id %}" class="d-inline react-form">
                             {% csrf_token %}
                             <div class="btn-group">
-                                <button type="button" class="btn btn-sm btn-outline-secondary dropdown-toggle" 
+                                <button type="button" class="btn btn-sm btn-outline-secondary dropdown-toggle {% if comment.id in user_reactions %}active{% endif %}" 
                                         data-bs-toggle="dropdown">
-                                    <i class="bi bi-emoji-smile"></i> {% trans "React" %}
+                                    <i class="bi bi-emoji-smile"></i> 
+                                    {% if comment.id in user_reactions %}
+                                        {{ user_reactions|get:comment.id|title }}
+                                    {% else %}
+                                        {% trans "React" %}
+                                    {% endif %}
                                 </button>
                                 <ul class="dropdown-menu">
                                     {% for value, label in reaction_form.fields.type.choices %}
@@ -132,7 +169,7 @@
                             </div>
                         </form>
                         {% endif %}
-                        {% if user == discussion.author and not comment.is_solution %}
+                        {% if user == discussion.author and not comment.is_solution and discussion.status == 'OPEN' %}
                         <form method="post" action="{% url 'social:mark_solution' comment.id %}" class="d-inline">
                             {% csrf_token %}
                             <button type="submit" class="btn btn-sm btn-outline-success ms-2">
@@ -143,7 +180,7 @@
                     </div>
                 </div>
 
-                {% if user.is_authenticated %}
+                {% if user.is_authenticated and discussion.status == 'OPEN' %}
                 <div class="collapse mt-3" id="replyForm{{ comment.id }}">
                     <div class="card card-body">
                         <form method="post" action="{% url 'social:add_reply' comment.id %}">
@@ -159,6 +196,7 @@
 
                 {% if comment.replies.exists %}
                 <div class="replies mt-3">
+                    <h6><i class="bi bi-reply-fill"></i> {% trans "Replies" %} ({{ comment.replies.count }})</h6>
                     {% for reply in comment.replies.all %}
                     <div class="card mb-2">
                         <div class="card-body">
@@ -188,4 +226,58 @@
     </div>
     {% endif %}
 </div>
+
+{% comment %}AJAX Script for reactions{% endcomment %}
+{% block extra_js %}
+{{ block.super }}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const reactForms = document.querySelectorAll('.react-form');
+    
+    reactForms.forEach(form => {
+        form.addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const formData = new FormData(form);
+            const commentId = form.action.split('/').slice(-2)[0];
+            
+            fetch(form.action, {
+                method: 'POST',
+                body: formData,
+                headers: {
+                    'X-Requested-With': 'XMLHttpRequest'
+                }
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.status === 'success') {
+                    // Update reaction button text
+                    const dropdownToggle = form.querySelector('.dropdown-toggle');
+                    dropdownToggle.classList.add('active');
+                    
+                    // Find the reaction text
+                    const reactionTypes = {
+                        'LIKE': 'Like',
+                        'HELPFUL': 'Helpful',
+                        'CONFUSED': 'Confused', 
+                        'THANKS': 'Thanks',
+                        'INSIGHTFUL': 'Insightful'
+                    };
+                    
+                    // Update the dropdown button text
+                    const buttonText = reactionTypes[data.user_reaction] || 'React';
+                    dropdownToggle.innerHTML = `<i class="bi bi-emoji-smile"></i> ${buttonText}`;
+                    
+                    // You could update reaction counts here if needed
+                    // ...
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+            });
+        });
+    });
+});
+</script>
+{% endblock %}
 {% endblock %} 

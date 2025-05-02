@@ -40,10 +40,10 @@
                 <div class="d-flex w-100 justify-content-between align-items-center">
                     <h5 class="mb-1">
                         {% if discussion.is_pinned %}
-                        <i class="bi bi-pin-angle-fill text-primary"></i>
+                        <i class="bi bi-pin-angle-fill text-primary" data-bs-toggle="tooltip" title="{% trans 'Pinned' %}"></i>
                         {% endif %}
                         {% if discussion.is_announcement %}
-                        <i class="bi bi-megaphone-fill text-warning"></i>
+                        <i class="bi bi-megaphone-fill text-warning" data-bs-toggle="tooltip" title="{% trans 'Announcement' %}"></i>
                         {% endif %}
                         <a href="{% url 'social:discussion_detail' discussion.slug %}" class="text-decoration-none">
                             {{ discussion.title }}
@@ -56,23 +56,89 @@
                 <p class="mb-1 text-muted">
                     {% trans "By" %} {{ discussion.author.get_full_name|default:discussion.author.username }}
                     {% if discussion.course %}
-                    {% trans "in" %} {{ discussion.course.title }}
+                    {% trans "in" %} <a href="{% url 'courses:course_detail' discussion.course.slug %}" class="text-decoration-none">{{ discussion.course.title }}</a>
                     {% endif %}
                 </p>
                 <div class="d-flex justify-content-between align-items-center">
-                    <small class="text-muted">
-                        <i class="bi bi-chat-dots"></i> {{ discussion.comments.count }}
-                        {% if discussion.comments.filter.is_solution %}
-                        <i class="bi bi-check-circle-fill text-success ms-2"></i>
+                    <div>
+                        <span class="me-3" data-bs-toggle="tooltip" title="{% trans 'Comments' %}">
+                            <i class="bi bi-chat-dots"></i> {{ discussion.total_comments }}
+                        </span>
+                        <span class="me-3" data-bs-toggle="tooltip" title="{% trans 'Views' %}">
+                            <i class="bi bi-eye"></i> {{ discussion.views_count }}
+                        </span>
+                        {% if discussion.solution_exists %}
+                        <span class="text-success" data-bs-toggle="tooltip" title="{% trans 'Has Solution' %}">
+                            <i class="bi bi-check-circle-fill"></i> {% trans "Solved" %}
+                        </span>
                         {% endif %}
-                    </small>
-                    <span class="badge bg-{{ discussion.status|lower }}">
+                    </div>
+                    <span class="badge {% if discussion.status == 'OPEN' %}bg-success{% elif discussion.status == 'CLOSED' %}bg-secondary{% else %}bg-dark{% endif %}">
                         {{ discussion.get_status_display }}
                     </span>
                 </div>
             </div>
             {% endfor %}
         </div>
+        
+        {% if discussions.has_other_pages %}
+        <nav aria-label="Discussion pagination" class="mt-4">
+            <ul class="pagination justify-content-center">
+                {% if discussions.has_previous %}
+                <li class="page-item">
+                    <a class="page-link" href="?page=1{% if request.GET.urlencode %}&{{ request.GET.urlencode }}{% endif %}" aria-label="First">
+                        <span aria-hidden="true">&laquo;&laquo;</span>
+                    </a>
+                </li>
+                <li class="page-item">
+                    <a class="page-link" href="?page={{ discussions.previous_page_number }}{% if request.GET.urlencode %}&{{ request.GET.urlencode }}{% endif %}" aria-label="Previous">
+                        <span aria-hidden="true">&laquo;</span>
+                    </a>
+                </li>
+                {% else %}
+                <li class="page-item disabled">
+                    <span class="page-link">&laquo;&laquo;</span>
+                </li>
+                <li class="page-item disabled">
+                    <span class="page-link">&laquo;</span>
+                </li>
+                {% endif %}
+                
+                {% for i in discussions.paginator.page_range %}
+                    {% if discussions.number == i %}
+                    <li class="page-item active">
+                        <span class="page-link">{{ i }}</span>
+                    </li>
+                    {% elif i > discussions.number|add:'-3' and i < discussions.number|add:'3' %}
+                    <li class="page-item">
+                        <a class="page-link" href="?page={{ i }}{% if request.GET.urlencode %}&{{ request.GET.urlencode }}{% endif %}">{{ i }}</a>
+                    </li>
+                    {% endif %}
+                {% endfor %}
+                
+                {% if discussions.has_next %}
+                <li class="page-item">
+                    <a class="page-link" href="?page={{ discussions.next_page_number }}{% if request.GET.urlencode %}&{{ request.GET.urlencode }}{% endif %}" aria-label="Next">
+                        <span aria-hidden="true">&raquo;</span>
+                    </a>
+                </li>
+                <li class="page-item">
+                    <a class="page-link" href="?page={{ discussions.paginator.num_pages }}{% if request.GET.urlencode %}&{{ request.GET.urlencode }}{% endif %}" aria-label="Last">
+                        <span aria-hidden="true">&raquo;&raquo;</span>
+                    </a>
+                </li>
+                {% else %}
+                <li class="page-item disabled">
+                    <span class="page-link">&raquo;</span>
+                </li>
+                <li class="page-item disabled">
+                    <span class="page-link">&raquo;&raquo;</span>
+                </li>
+                {% endif %}
+            </ul>
+        </nav>
+        {% endif %}
+        
         {% else %}
         <div class="alert alert-info">
             {% trans "No discussions found." %}

@@ -11,51 +11,295 @@
     </nav>
 </div>
 
-<div class="card">
-    <div class="card-body">
-        <h1 class="h2 mb-4">{% trans "Your Activity" %}</h1>
-
-        {% if activities %}
-        <div class="timeline">
-            {% for activity in activities %}
-            <div class="timeline-item mb-4">
-                <div class="d-flex">
-                    <div class="timeline-icon me-3">
-                        {% if activity.activity_type == 'DISCUSSION_CREATED' %}
-                        <i class="bi bi-chat-square-text-fill text-primary fs-4"></i>
-                        {% elif activity.activity_type == 'COMMENT_ADDED' %}
-                        <i class="bi bi-chat-dots-fill text-success fs-4"></i>
-                        {% elif activity.activity_type == 'REACTION_ADDED' %}
-                        <i class="bi bi-emoji-smile-fill text-warning fs-4"></i>
-                        {% elif activity.activity_type == 'SOLUTION_MARKED' %}
-                        <i class="bi bi-check-circle-fill text-success fs-4"></i>
-                        {% endif %}
-                    </div>
-                    <div class="timeline-content">
-                        <div class="d-flex justify-content-between align-items-center mb-1">
-                            <h5 class="mb-0">{{ activity.get_activity_type_display }}</h5>
-                            <small class="text-muted">
-                                {{ activity.created_at|timesince }} {% trans "ago" %}
-                            </small>
+<!-- Activity Stats -->
+<div class="row mb-4">
+    <div class="col-md-12">
+        <div class="card">
+            <div class="card-body">
+                <h5 class="card-title mb-3">{% trans "Activity Overview" %}</h5>
+                <div class="row">
+                    <div class="col-md-3">
+                        <div class="p-3 bg-light rounded text-center">
+                            <h3>{{ total_activities }}</h3>
+                            <p class="mb-0 text-muted">{% trans "Total Activities" %}</p>
                         </div>
-                        <p class="mb-0">
-                            {% if activity.discussion %}
-                            {% trans "in" %} 
-                            <a href="{% url 'social:discussion_detail' activity.discussion.slug %}">
-                                {{ activity.discussion.title }}
-                            </a>
-                            {% endif %}
-                        </p>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="p-3 bg-light rounded text-center">
+                            <h3>{{ activities_today }}</h3>
+                            <p class="mb-0 text-muted">{% trans "Today" %}</p>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="p-3 bg-light rounded text-center">
+                            <h3>{{ activities_this_week }}</h3>
+                            <p class="mb-0 text-muted">{% trans "This Week" %}</p>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="p-3 bg-light rounded text-center">
+                            {% for activity_count in activity_counts|slice:":1" %}
+                            <h3>
+                                {% if activity_count.activity_type == 'DISCUSSION_CREATED' %}
+                                {% trans "Creating Discussions" %}
+                                {% elif activity_count.activity_type == 'COMMENT_ADDED' %}
+                                {% trans "Adding Comments" %}
+                                {% elif activity_count.activity_type == 'REACTION_ADDED' %}
+                                {% trans "Adding Reactions" %}
+                                {% elif activity_count.activity_type == 'SOLUTION_MARKED' %}
+                                {% trans "Marking Solutions" %}
+                                {% elif activity_count.activity_type == 'DISCUSSION_VIEWED' %}
+                                {% trans "Viewing Discussions" %}
+                                {% elif activity_count.activity_type == 'DISCUSSION_CLOSED' %}
+                                {% trans "Closing Discussions" %}
+                                {% elif activity_count.activity_type == 'DISCUSSION_REOPENED' %}
+                                {% trans "Reopening Discussions" %}
+                                {% else %}
+                                {{ activity_count.activity_type|cut:"_"|title }}
+                                {% endif %}
+                            </h3>
+                            <p class="mb-0 text-muted">{% trans "Most Common Activity" %}</p>
+                            {% empty %}
+                            <h3>-</h3>
+                            <p class="mb-0 text-muted">{% trans "Most Common Activity" %}</p>
+                            {% endfor %}
+                        </div>
                     </div>
                 </div>
             </div>
-            {% endfor %}
         </div>
-        {% else %}
-        <div class="alert alert-info">
-            {% trans "No activity yet." %}
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-md-3">
+        <div class="card mb-4">
+            <div class="card-header">
+                <h5 class="card-title mb-0">{% trans "Filter Activities" %}</h5>
+            </div>
+            <div class="card-body">
+                <form method="get" class="filter-form">
+                    {% if filter_form %}
+                    {{ filter_form.as_p }}
+                    {% else %}
+                    <div class="mb-3">
+                        <label for="activity_type" class="form-label">{% trans "Activity Type" %}</label>
+                        <select name="activity_type" id="activity_type" class="form-select">
+                            <option value="">{% trans "All Activities" %}</option>
+                            <option value="DISCUSSION_CREATED" {% if request.GET.activity_type == 'DISCUSSION_CREATED' %}selected{% endif %}>{% trans "Discussions Created" %}</option>
+                            <option value="COMMENT_ADDED" {% if request.GET.activity_type == 'COMMENT_ADDED' %}selected{% endif %}>{% trans "Comments Added" %}</option>
+                            <option value="REACTION_ADDED" {% if request.GET.activity_type == 'REACTION_ADDED' %}selected{% endif %}>{% trans "Reactions Added" %}</option>
+                            <option value="SOLUTION_MARKED" {% if request.GET.activity_type == 'SOLUTION_MARKED' %}selected{% endif %}>{% trans "Solutions Marked" %}</option>
+                            <option value="DISCUSSION_VIEWED" {% if request.GET.activity_type == 'DISCUSSION_VIEWED' %}selected{% endif %}>{% trans "Discussions Viewed" %}</option>
+                            <option value="DISCUSSION_CLOSED" {% if request.GET.activity_type == 'DISCUSSION_CLOSED' %}selected{% endif %}>{% trans "Discussions Closed" %}</option>
+                            <option value="DISCUSSION_REOPENED" {% if request.GET.activity_type == 'DISCUSSION_REOPENED' %}selected{% endif %}>{% trans "Discussions Reopened" %}</option>
+                        </select>
+                    </div>
+                    <div class="mb-3">
+                        <label for="date_from" class="form-label">{% trans "From Date" %}</label>
+                        <input type="date" name="date_from" id="date_from" class="form-control" value="{{ request.GET.date_from }}">
+                    </div>
+                    <div class="mb-3">
+                        <label for="date_to" class="form-label">{% trans "To Date" %}</label>
+                        <input type="date" name="date_to" id="date_to" class="form-control" value="{{ request.GET.date_to }}">
+                    </div>
+                    {% endif %}
+                    <button type="submit" class="btn btn-primary w-100">
+                        {% trans "Apply Filters" %}
+                    </button>
+                </form>
+            </div>
+        </div>
+
+        <!-- Activity Type Breakdown -->
+        {% if activity_counts %}
+        <div class="card mb-4">
+            <div class="card-header">
+                <h5 class="card-title mb-0">{% trans "Activity Breakdown" %}</h5>
+            </div>
+            <div class="card-body">
+                <ul class="list-group list-group-flush">
+                    {% for activity_count in activity_counts %}
+                    <li class="list-group-item d-flex justify-content-between align-items-center">
+                        {% if activity_count.activity_type == 'DISCUSSION_CREATED' %}
+                        {% trans "Created Discussions" %}
+                        {% elif activity_count.activity_type == 'COMMENT_ADDED' %}
+                        {% trans "Added Comments" %}
+                        {% elif activity_count.activity_type == 'REACTION_ADDED' %}
+                        {% trans "Added Reactions" %}
+                        {% elif activity_count.activity_type == 'SOLUTION_MARKED' %}
+                        {% trans "Marked Solutions" %}
+                        {% elif activity_count.activity_type == 'DISCUSSION_VIEWED' %}
+                        {% trans "Viewed Discussions" %}
+                        {% elif activity_count.activity_type == 'DISCUSSION_CLOSED' %}
+                        {% trans "Closed Discussions" %}
+                        {% elif activity_count.activity_type == 'DISCUSSION_REOPENED' %}
+                        {% trans "Reopened Discussions" %}
+                        {% else %}
+                        {{ activity_count.activity_type|cut:"_"|title }}
+                        {% endif %}
+                        <span class="badge bg-primary rounded-pill">{{ activity_count.count }}</span>
+                    </li>
+                    {% endfor %}
+                </ul>
+            </div>
         </div>
         {% endif %}
+    </div>
+
+    <div class="col-md-9">
+        <div class="card">
+            <div class="card-body">
+                <h1 class="h2 mb-4">{% trans "Your Activity" %}</h1>
+
+                {% if activities %}
+                <div class="timeline">
+                    {% for activity in activities %}
+                    <div class="timeline-item mb-4 pb-3 border-bottom">
+                        <div class="d-flex">
+                            <div class="timeline-icon me-3">
+                                {% if activity.activity_type == 'DISCUSSION_CREATED' %}
+                                <i class="bi bi-chat-square-text-fill text-primary fs-4"></i>
+                                {% elif activity.activity_type == 'COMMENT_ADDED' %}
+                                <i class="bi bi-chat-dots-fill text-success fs-4"></i>
+                                {% elif activity.activity_type == 'REACTION_ADDED' %}
+                                <i class="bi bi-emoji-smile-fill text-warning fs-4"></i>
+                                {% elif activity.activity_type == 'SOLUTION_MARKED' %}
+                                <i class="bi bi-check-circle-fill text-success fs-4"></i>
+                                {% elif activity.activity_type == 'DISCUSSION_VIEWED' %}
+                                <i class="bi bi-eye-fill text-info fs-4"></i>
+                                {% elif activity.activity_type == 'DISCUSSION_CLOSED' %}
+                                <i class="bi bi-lock-fill text-secondary fs-4"></i>
+                                {% elif activity.activity_type == 'DISCUSSION_REOPENED' %}
+                                <i class="bi bi-unlock-fill text-primary fs-4"></i>
+                                {% else %}
+                                <i class="bi bi-activity text-muted fs-4"></i>
+                                {% endif %}
+                            </div>
+                            <div class="timeline-content flex-grow-1">
+                                <div class="d-flex justify-content-between align-items-center mb-1">
+                                    <h5 class="mb-0">{{ activity.get_activity_type_display }}</h5>
+                                    <small class="text-muted">
+                                        {{ activity.created_at|timesince }} {% trans "ago" %}
+                                    </small>
+                                </div>
+                                
+                                {% if activity.discussion %}
+                                <p class="mb-2">
+                                    {% if activity.activity_type == 'DISCUSSION_CREATED' %}
+                                    {% trans "You created the discussion" %} 
+                                    {% elif activity.activity_type == 'DISCUSSION_VIEWED' %}
+                                    {% trans "You viewed the discussion" %} 
+                                    {% elif activity.activity_type == 'DISCUSSION_CLOSED' %}
+                                    {% trans "You closed the discussion" %} 
+                                    {% elif activity.activity_type == 'DISCUSSION_REOPENED' %}
+                                    {% trans "You reopened the discussion" %} 
+                                    {% else %}
+                                    {% trans "in" %} 
+                                    {% endif %}
+                                    <a href="{% url 'social:discussion_detail' activity.discussion.slug %}" class="fw-bold">
+                                        {{ activity.discussion.title }}
+                                    </a>
+                                </p>
+                                {% endif %}
+                                
+                                {% if activity.comment %}
+                                <div class="mb-0 bg-light p-2 rounded">
+                                    {% if activity.activity_type == 'COMMENT_ADDED' %}
+                                    <small class="text-muted">{% trans "Your comment:" %}</small>
+                                    {% elif activity.activity_type == 'REACTION_ADDED' %}
+                                    <small class="text-muted">{% trans "You reacted to:" %}</small>
+                                    {% elif activity.activity_type == 'SOLUTION_MARKED' %}
+                                    <small class="text-muted">{% trans "You marked as solution:" %}</small>
+                                    {% endif %}
+                                    <div class="text-truncate">
+                                        {% if activity.comment.content|length > 100 %}
+                                            {{ activity.comment.content|slice:":100" }}...
+                                        {% else %}
+                                            {{ activity.comment.content }}
+                                        {% endif %}
+                                    </div>
+                                </div>
+                                {% endif %}
+                                
+                                {% if activity.additional_data %}
+                                <small class="text-muted d-block mt-1">
+                                    {% for key, value in activity.additional_data.items %}
+                                    <span class="badge bg-light text-dark me-1">{{ key }}: {{ value }}</span>
+                                    {% endfor %}
+                                </small>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+                
+                {% if activities.has_other_pages %}
+                <nav aria-label="Activity pagination" class="mt-4">
+                    <ul class="pagination justify-content-center">
+                        {% if activities.has_previous %}
+                        <li class="page-item">
+                            <a class="page-link" href="?page=1{% if request.GET.urlencode %}&{{ request.GET.urlencode }}{% endif %}" aria-label="First">
+                                <span aria-hidden="true">&laquo;&laquo;</span>
+                            </a>
+                        </li>
+                        <li class="page-item">
+                            <a class="page-link" href="?page={{ activities.previous_page_number }}{% if request.GET.urlencode %}&{{ request.GET.urlencode }}{% endif %}" aria-label="Previous">
+                                <span aria-hidden="true">&laquo;</span>
+                            </a>
+                        </li>
+                        {% else %}
+                        <li class="page-item disabled">
+                            <span class="page-link">&laquo;&laquo;</span>
+                        </li>
+                        <li class="page-item disabled">
+                            <span class="page-link">&laquo;</span>
+                        </li>
+                        {% endif %}
+                        
+                        {% for i in activities.paginator.page_range %}
+                            {% if activities.number == i %}
+                            <li class="page-item active">
+                                <span class="page-link">{{ i }}</span>
+                            </li>
+                            {% elif i > activities.number|add:'-3' and i < activities.number|add:'3' %}
+                            <li class="page-item">
+                                <a class="page-link" href="?page={{ i }}{% if request.GET.urlencode %}&{{ request.GET.urlencode }}{% endif %}">{{ i }}</a>
+                            </li>
+                            {% endif %}
+                        {% endfor %}
+                        
+                        {% if activities.has_next %}
+                        <li class="page-item">
+                            <a class="page-link" href="?page={{ activities.next_page_number }}{% if request.GET.urlencode %}&{{ request.GET.urlencode }}{% endif %}" aria-label="Next">
+                                <span aria-hidden="true">&raquo;</span>
+                            </a>
+                        </li>
+                        <li class="page-item">
+                            <a class="page-link" href="?page={{ activities.paginator.num_pages }}{% if request.GET.urlencode %}&{{ request.GET.urlencode }}{% endif %}" aria-label="Last">
+                                <span aria-hidden="true">&raquo;&raquo;</span>
+                            </a>
+                        </li>
+                        {% else %}
+                        <li class="page-item disabled">
+                            <span class="page-link">&raquo;</span>
+                        </li>
+                        <li class="page-item disabled">
+                            <span class="page-link">&raquo;&raquo;</span>
+                        </li>
+                        {% endif %}
+                    </ul>
+                </nav>
+                {% endif %}
+                
+                {% else %}
+                <div class="alert alert-info">
+                    {% trans "No activity yet." %}
+                </div>
+                {% endif %}
+            </div>
+        </div>
     </div>
 </div>
 {% endblock %} 
