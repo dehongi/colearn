@@ -89,6 +89,28 @@ def discussion_detail(request, slug):
 
     # Get user's reactions if authenticated
     user_reactions = {}
+    # Calculate reaction counts for each comment
+    comment_reactions = {}
+
+    for comment in comments:
+        reaction_counts = {}
+        for reaction_type in Reaction.Type.values:
+            count = Reaction.objects.filter(comment=comment, type=reaction_type).count()
+            if count > 0:
+                reaction_counts[reaction_type] = count
+        comment_reactions[comment.id] = reaction_counts
+
+        # Also calculate for replies
+        for reply in comment.replies.all():
+            reply_reaction_counts = {}
+            for reaction_type in Reaction.Type.values:
+                count = Reaction.objects.filter(
+                    comment=reply, type=reaction_type
+                ).count()
+                if count > 0:
+                    reply_reaction_counts[reaction_type] = count
+            comment_reactions[reply.id] = reply_reaction_counts
+
     if request.user.is_authenticated:
         reactions = Reaction.objects.filter(
             user=request.user, comment__in=comments
@@ -97,6 +119,7 @@ def discussion_detail(request, slug):
 
     comment_form = CommentForm()
     reply_form = ReplyForm()
+    reaction_form = ReactionForm()
 
     context = {
         "discussion": discussion,
@@ -104,6 +127,8 @@ def discussion_detail(request, slug):
         "comment_form": comment_form,
         "reply_form": reply_form,
         "user_reactions": user_reactions,
+        "comment_reactions": comment_reactions,
+        "reaction_form": reaction_form,
     }
     return render(request, "social/discussion_detail.html", context)
 

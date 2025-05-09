@@ -1,5 +1,6 @@
 {% extends "social/base.html" %}
 {% load i18n %}
+{% load social_tags %}
 
 {% block social_content %}
 <div class="mb-4">
@@ -124,7 +125,7 @@
 
                 <div class="d-flex justify-content-between align-items-center">
                     <div class="reactions">
-                        {% for reaction_type, count in comment.reactions.values_list('type').annotate(count=Count('type')) %}
+                        {% for reaction_type, count in comment_reactions|get_item:comment.id|items %}
                         <span class="badge bg-light text-dark me-1" 
                               data-bs-toggle="tooltip" 
                               title="{{ count }} {{ reaction_type|title }}">
@@ -151,7 +152,7 @@
                                         data-bs-toggle="dropdown">
                                     <i class="bi bi-emoji-smile"></i> 
                                     {% if comment.id in user_reactions %}
-                                        {{ user_reactions|get:comment.id|title }}
+                                        {{ user_reactions|get_item:comment.id|title }}
                                     {% else %}
                                         {% trans "React" %}
                                     {% endif %}
@@ -210,6 +211,51 @@
                             </div>
                             <div class="reply-content">
                                 {{ reply.content|linebreaks }}
+                            </div>
+                            <div class="d-flex justify-content-between align-items-center mt-2">
+                                <div class="reactions">
+                                    {% for reaction_type, count in comment_reactions|get_item:reply.id|items %}
+                                    <span class="badge bg-light text-dark me-1" 
+                                        data-bs-toggle="tooltip" 
+                                        title="{{ count }} {{ reaction_type|title }}">
+                                        {% if reaction_type == 'LIKE' %}<i class="bi bi-heart-fill text-danger"></i>{% endif %}
+                                        {% if reaction_type == 'HELPFUL' %}<i class="bi bi-hand-thumbs-up-fill text-primary"></i>{% endif %}
+                                        {% if reaction_type == 'CONFUSED' %}<i class="bi bi-question-circle-fill text-warning"></i>{% endif %}
+                                        {% if reaction_type == 'THANKS' %}<i class="bi bi-emoji-smile-fill text-success"></i>{% endif %}
+                                        {% if reaction_type == 'INSIGHTFUL' %}<i class="bi bi-lightbulb-fill text-info"></i>{% endif %}
+                                        {{ count }}
+                                    </span>
+                                    {% endfor %}
+                                </div>
+                                
+                                {% if user.is_authenticated and discussion.status == 'OPEN' %}
+                                <div class="actions">
+                                    <form method="post" action="{% url 'social:add_reaction' reply.id %}" class="d-inline react-form">
+                                        {% csrf_token %}
+                                        <div class="btn-group">
+                                            <button type="button" class="btn btn-sm btn-outline-secondary dropdown-toggle {% if reply.id in user_reactions %}active{% endif %}" 
+                                                    data-bs-toggle="dropdown">
+                                                <i class="bi bi-emoji-smile"></i> 
+                                                {% if reply.id in user_reactions %}
+                                                    {{ user_reactions|get_item:reply.id|title }}
+                                                {% else %}
+                                                    {% trans "React" %}
+                                                {% endif %}
+                                            </button>
+                                            <ul class="dropdown-menu">
+                                                {% for value, label in reaction_form.fields.type.choices %}
+                                                <li>
+                                                    <button type="submit" name="type" value="{{ value }}" 
+                                                            class="dropdown-item">
+                                                        {{ label }}
+                                                    </button>
+                                                </li>
+                                                {% endfor %}
+                                            </ul>
+                                        </div>
+                                    </form>
+                                </div>
+                                {% endif %}
                             </div>
                         </div>
                     </div>
