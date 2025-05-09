@@ -164,17 +164,31 @@ def course_detail(request, slug):
 def lesson_detail(request, course_slug, lesson_id):
     course = get_object_or_404(Course, slug=course_slug, is_published=True)
     lesson = get_object_or_404(Lesson, id=lesson_id, module__course=course)
-    enrollment = get_object_or_404(
-        Enrollment, user=request.user, course=course, is_active=True
-    )
 
-    # Track lesson progress
-    progress, created = LessonProgress.objects.get_or_create(
-        enrollment=enrollment, lesson=lesson
-    )
+    # Check if user is the instructor of this course
+    is_instructor = request.user == course.instructor
 
-    # Mark lesson as completed if requested
-    if request.method == "POST" and "mark_completed" in request.POST:
+    # Check if user is enrolled
+    enrollment = Enrollment.objects.filter(
+        user=request.user, course=course, is_active=True
+    ).first()
+
+    # If not enrolled and not the instructor, redirect to course detail with message
+    if not enrollment and not is_instructor:
+        messages.warning(
+            request, _("You need to be enrolled in this course to access its lessons.")
+        )
+        return redirect("courses:course_detail", slug=course_slug)
+
+    # Track lesson progress (only for enrolled students, not instructors)
+    progress = None
+    if enrollment:
+        progress, created = LessonProgress.objects.get_or_create(
+            enrollment=enrollment, lesson=lesson
+        )
+
+    # Mark lesson as completed if requested (only for enrolled students)
+    if request.method == "POST" and "mark_completed" in request.POST and enrollment:
         progress.is_completed = True
         progress.completed_at = timezone.now()
         progress.save()
@@ -223,15 +237,16 @@ def lesson_detail(request, course_slug, lesson_id):
     )
     prev_lesson = all_lessons[current_index - 1] if current_index > 0 else None
 
-    # Calculate course progress
-    total_lessons = len(all_lessons)
-    completed_lessons = LessonProgress.objects.filter(
-        enrollment=enrollment, is_completed=True
-    ).count()
-
-    progress_percentage = (
-        int((completed_lessons / total_lessons) * 100) if total_lessons > 0 else 0
-    )
+    # Calculate course progress (only for enrolled students)
+    progress_percentage = 0
+    if enrollment:
+        total_lessons = len(all_lessons)
+        completed_lessons = LessonProgress.objects.filter(
+            enrollment=enrollment, is_completed=True
+        ).count()
+        progress_percentage = (
+            int((completed_lessons / total_lessons) * 100) if total_lessons > 0 else 0
+        )
 
     return render(
         request,
@@ -245,6 +260,7 @@ def lesson_detail(request, course_slug, lesson_id):
             "prev_lesson": prev_lesson,
             "progress": progress,
             "progress_percentage": progress_percentage,
+            "is_instructor": is_instructor,
         },
     )
 
