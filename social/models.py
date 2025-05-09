@@ -14,7 +14,7 @@ class Discussion(models.Model):
         ARCHIVED = "ARCHIVED", _("Archived")
 
     title = models.CharField(_("Title"), max_length=200)
-    slug = models.SlugField(_("Slug"), unique=True, blank=True)
+    slug = models.SlugField(_("Slug"), max_length=200, unique=True, blank=True)
     content = models.TextField(_("Content"))
     author = models.ForeignKey(
         settings.AUTH_USER_MODEL,
