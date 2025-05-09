@@ -1,0 +1,57 @@
+{
+  "name": "CoLearn",
+  "short_name": "CoLearn",
+  "description": "Learn together, grow together",
+  "icons": [
+    {
+      "src": "/static/pwa/web-app-manifest-192x192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "maskable"
+    },
+    {
+      "src": "/static/pwa/web-app-manifest-512x512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable"
+    },
+    {
+      "src": "/static/pwa/web-app-manifest-192x192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "/static/pwa/web-app-manifest-512x512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any"
+    }
+  ],
+  "theme_color": "#ffffff",
+  "background_color": "#ffffff",
+  "display": "standalone",
+  "orientation": "portrait",
+  "start_url": "/",
+  "scope": "/",
+  "lang": "en",
+  "dir": "ltr",
+  "categories": [
+    "education",
+    "productivity"
+  ],
+  "shortcuts": [
+    {
+      "name": "Dashboard",
+      "url": "/dashboard",
+      "description": "View your learning dashboard"
+    }
+  ],
+  "screenshots": [
+    {
+      "src": "/static/pwa/screenshot1.png",
+      "sizes": "1280x720",
+      "type": "image/png"
+    }
+  ]
+}
