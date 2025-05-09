@@ -1,32 +1,67 @@
 {% extends 'base.html' %}
+{% load static %}
 
 {% block title %}Home - CoLearn{% endblock %}
 
+{% block extra_css %}
+{{ block.super }}
+<link rel="stylesheet" href="{% static 'website/css/home.css' %}">
+{% endblock %}
+
 {% block content %}
 <!-- Hero Section -->
-<section class="py-5 bg-light rounded-3 mb-5">
-    <div class="row py-lg-5">
-        <div class="col-lg-6 col-md-8 mx-auto text-center">
-            <h1 class="fw-bold mb-4">Learn Together, <span class="text-primary">Grow Together</span></h1>
-            <p class="lead mb-4">CoLearn is a collaborative platform where experts create courses and learners help improve them. Join our community to share knowledge and learn from others.</p>
-            <div class="d-flex justify-content-center gap-3">
-                {% if user.is_authenticated %}
-                    <a href="{% url 'courses:course_list' %}" class="btn btn-primary btn-lg px-4 shadow-sm">
-                        <i class="bi bi-collection me-2"></i>Browse Courses
-                    </a>
-                    {% if user.is_instructor %}
-                        <a href="{% url 'courses:instructor_dashboard' %}" class="btn btn-outline-primary btn-lg px-4">
-                            <i class="bi bi-speedometer2 me-2"></i>Instructor Dashboard
+<section class="hero-section py-5 mb-5">
+    <div class="container">
+        <div class="row align-items-center">
+            <div class="col-lg-6 mb-5 mb-lg-0">
+                <h1 class="display-4 fw-bold mb-4 text-gradient">Learn Together, <br><span class="text-primary">Grow Together</span></h1>
+                <p class="lead mb-4">CoLearn is a collaborative platform where experts create courses and learners help improve them. Join our community to share knowledge and learn from others.</p>
+                <div class="d-flex flex-wrap gap-3">
+                    {% if user.is_authenticated %}
+                        <a href="{% url 'courses:course_list' %}" class="btn btn-primary btn-lg px-4 shadow">
+                            <i class="bi bi-collection me-2"></i>Browse Courses
+                        </a>
+                        {% if user.is_instructor %}
+                            <a href="{% url 'courses:instructor_dashboard' %}" class="btn btn-outline-primary btn-lg px-4">
+                                <i class="bi bi-speedometer2 me-2"></i>Instructor Dashboard
+                            </a>
+                        {% endif %}
+                    {% else %}
+                        <a href="{% url 'accounts:register' %}" class="btn btn-primary btn-lg px-4 shadow pulse-animation">
+                            <i class="bi bi-person-plus me-2"></i>Get Started
+                        </a>
+                        <a href="{% url 'accounts:login' %}" class="btn btn-outline-primary btn-lg px-4">
+                            <i class="bi bi-box-arrow-in-right me-2"></i>Login
                         </a>
                     {% endif %}
-                {% else %}
-                    <a href="{% url 'accounts:register' %}" class="btn btn-primary btn-lg px-4 shadow-sm">
-                        <i class="bi bi-person-plus me-2"></i>Get Started
-                    </a>
-                    <a href="{% url 'accounts:login' %}" class="btn btn-outline-primary btn-lg px-4">
-                        <i class="bi bi-box-arrow-in-right me-2"></i>Login
-                    </a>
-                {% endif %}
+                </div>
+            </div>
+            <div class="col-lg-6 text-center">
+                <img src="{% static 'website/images/hero-illustration.svg' %}" alt="Learning together" class="img-fluid hero-image" onerror="this.onerror=null; this.src='https://via.placeholder.com/600x400?text=CoLearn'; this.classList.add('placeholder-fallback');">
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Stats Section -->
+<section class="container mb-5">
+    <div class="row g-4 text-center">
+        <div class="col-md-4">
+            <div class="stats-card shadow-sm p-4 rounded-3 h-100">
+                <h3 class="counter-value fw-bold">500+</h3>
+                <p class="text-muted">Active Courses</p>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="stats-card shadow-sm p-4 rounded-3 h-100">
+                <h3 class="counter-value fw-bold">10K+</h3>
+                <p class="text-muted">Happy Students</p>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="stats-card shadow-sm p-4 rounded-3 h-100">
+                <h3 class="counter-value fw-bold">200+</h3>
+                <p class="text-muted">Expert Instructors</p>
             </div>
         </div>
     </div>
@@ -35,16 +70,17 @@
 <!-- Features Section -->
 <div class="container mb-5">
     <div class="text-center mb-5">
+        <span class="badge bg-primary bg-opacity-10 text-primary px-3 py-2 mb-2">Our Benefits</span>
         <h2 class="fw-bold mb-3">Why Choose <span class="text-primary">CoLearn</span>?</h2>
         <p class="lead text-muted mx-auto" style="max-width: 700px;">Our platform combines expert knowledge with community feedback to create the best learning experience.</p>
     </div>
     
     <div class="row g-4">
         <div class="col-lg-4 col-md-6">
-            <div class="card h-100 border-0 shadow-sm">
+            <div class="card h-100 border-0 shadow-sm feature-card">
                 <div class="card-body text-center p-4">
                     <div class="mb-4">
-                        <span class="d-inline-block bg-primary bg-opacity-10 text-primary p-3 rounded-circle">
+                        <span class="d-inline-block bg-primary bg-opacity-10 text-primary p-3 rounded-circle feature-icon">
                             <i class="bi bi-people-fill" style="font-size: 2.5rem;"></i>
                         </span>
                     </div>
@@ -55,10 +91,10 @@
             </div>
         </div>
         <div class="col-lg-4 col-md-6">
-            <div class="card h-100 border-0 shadow-sm">
+            <div class="card h-100 border-0 shadow-sm feature-card">
                 <div class="card-body text-center p-4">
                     <div class="mb-4">
-                        <span class="d-inline-block bg-primary bg-opacity-10 text-primary p-3 rounded-circle">
+                        <span class="d-inline-block bg-primary bg-opacity-10 text-primary p-3 rounded-circle feature-icon">
                             <i class="bi bi-mortarboard-fill" style="font-size: 2.5rem;"></i>
                         </span>
                     </div>
@@ -68,11 +104,11 @@
                 </div>
             </div>
         </div>
-        <div class="col-lg-4 col-md-6">
-            <div class="card h-100 border-0 shadow-sm">
+        <div class="col-lg-4 col-md-6 mx-auto">
+            <div class="card h-100 border-0 shadow-sm feature-card">
                 <div class="card-body text-center p-4">
                     <div class="mb-4">
-                        <span class="d-inline-block bg-primary bg-opacity-10 text-primary p-3 rounded-circle">
+                        <span class="d-inline-block bg-primary bg-opacity-10 text-primary p-3 rounded-circle feature-icon">
                             <i class="bi bi-lightning-charge-fill" style="font-size: 2.5rem;"></i>
                         </span>
                     </div>
@@ -86,18 +122,19 @@
 </div>
 
 <!-- How It Works Section -->
-<section class="bg-light py-5 my-5 rounded-3">
+<section class="how-it-works py-5 my-5">
     <div class="container">
         <div class="text-center mb-5">
+            <span class="badge bg-primary bg-opacity-10 text-primary px-3 py-2 mb-2">Simple Process</span>
             <h2 class="fw-bold mb-3">How CoLearn <span class="text-primary">Works</span></h2>
             <p class="lead text-muted mx-auto" style="max-width: 700px;">Our platform makes it easy to learn and contribute to educational content.</p>
         </div>
         
         <div class="row g-4">
             <div class="col-md-6 col-lg-3">
-                <div class="text-center">
+                <div class="text-center steps-card">
                     <div class="position-relative mb-4">
-                        <div class="bg-white rounded-circle d-inline-block p-3 shadow">
+                        <div class="bg-white rounded-circle d-inline-block p-3 shadow steps-icon">
                             <i class="bi bi-search text-primary" style="font-size: 2rem;"></i>
                         </div>
                         <div class="position-absolute top-50 start-100 translate-middle d-none d-lg-block">
@@ -109,9 +146,9 @@
                 </div>
             </div>
             <div class="col-md-6 col-lg-3">
-                <div class="text-center">
+                <div class="text-center steps-card">
                     <div class="position-relative mb-4">
-                        <div class="bg-white rounded-circle d-inline-block p-3 shadow">
+                        <div class="bg-white rounded-circle d-inline-block p-3 shadow steps-icon">
                             <i class="bi bi-book text-primary" style="font-size: 2rem;"></i>
                         </div>
                         <div class="position-absolute top-50 start-100 translate-middle d-none d-lg-block">
@@ -123,9 +160,9 @@
                 </div>
             </div>
             <div class="col-md-6 col-lg-3">
-                <div class="text-center">
+                <div class="text-center steps-card">
                     <div class="position-relative mb-4">
-                        <div class="bg-white rounded-circle d-inline-block p-3 shadow">
+                        <div class="bg-white rounded-circle d-inline-block p-3 shadow steps-icon">
                             <i class="bi bi-chat-dots text-primary" style="font-size: 2rem;"></i>
                         </div>
                         <div class="position-absolute top-50 start-100 translate-middle d-none d-lg-block">
@@ -137,9 +174,9 @@
                 </div>
             </div>
             <div class="col-md-6 col-lg-3">
-                <div class="text-center">
+                <div class="text-center steps-card">
                     <div class="position-relative mb-4">
-                        <div class="bg-white rounded-circle d-inline-block p-3 shadow">
+                        <div class="bg-white rounded-circle d-inline-block p-3 shadow steps-icon">
                             <i class="bi bi-award text-primary" style="font-size: 2rem;"></i>
                         </div>
                     </div>
@@ -152,11 +189,11 @@
 </section>
 
 <!-- Call to Action -->
-<section class="py-5 mb-5 bg-primary text-white rounded-3 shadow">
+<section class="py-5 mb-5 text-white rounded-3 shadow cta-section">
     <div class="container text-center py-4">
         <h2 class="fw-bold mb-3">Ready to Start Learning?</h2>
         <p class="lead mb-4">Join our growing community of learners and instructors today.</p>
-        <div class="d-flex justify-content-center gap-3">
+        <div class="d-flex flex-wrap justify-content-center gap-3">
             {% if not user.is_authenticated %}
                 <a href="{% url 'accounts:register' %}" class="btn btn-light btn-lg px-4 text-primary shadow-sm">
                     <i class="bi bi-person-plus me-2"></i>Create Free Account
